@@ -1,0 +1,14 @@
+server:
+  port: 8080
+  context-path: /producer-api
+
+spring:
+  profiles: local
+
+logging:
+  level:
+    root: INFO
+    br.com.iot: DEBUG
+  pattern:
+    console: '%highlight(<<%-5level>>) %d{dd-MM-yy HH:mm:ss.SSS} [%thread] %cyan(%logger{-1}) - %msg%n'
+    file: '%<<%-5level>> %d{dd-MM-yy HH:mm:ss.SSS} [%thread] %logger{-1} - %msg%n'
