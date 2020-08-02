@@ -1,0 +1,95 @@
+openapi: 3.0.1
+info:
+  title: IoT Producer Simulator
+  description: 'Dummy producer to simulate IoT sensor data'
+  contact:
+    email: flaviosolci@gmail.com
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/producer-api
+    description: Local
+tags:
+  - name: Events
+    description: Manage the events producer
+paths:
+  /sensor/events:
+    post:
+      tags:
+        - Events
+      summary: Produce the events based on the input definition
+      requestBody:
+        description: event definition
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/SensorEventRequest'
+        required: true
+      responses:
+        202:
+          description: Request was accepted and is being processed.
+        422:
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    SensorEventRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Senso ID (optional, if not provided a random ID will be generated)
+          example: 123456
+        type:
+          type: string
+          enum: [TEMPERATURE, HUMIDITY, HEART_RATE]
+          example: HUMIDITY
+        total:
+          type: integer
+          format: int32
+          description: Total of events of the given type for given sensorId must be sent
+          minimum: 1
+          example: 10
+        every:
+          type: integer
+          format: int32
+          description:  The delay, in seconds, between each event
+          minimum: 1
+          maximum: 60
+          example: 2
+      required:
+        - type
+        - total
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+          example: "ValidationException"
+        description:
+          type: string
+          description: Error description
+          example: "The field 'every' must be between 0 and 60."
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorField'
+    ErrorField:
+      type: object
+      properties:
+        field:
+          type: string
+          description: In case the error was caused by a specific field, it will be returned here the field name
+          example: "every"
+        description:
+          type: string
+          description: Especific error description for the field
+          example: "The field 'every' must be between 0 and 60."

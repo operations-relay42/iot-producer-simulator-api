@@ -7,6 +7,7 @@ RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM openjdk:11-jre
 WORKDIR /usr/app
+RUN mkdir -p /var/log
 
 COPY --from=builder /usr/app/dependencies/ ./
 COPY --from=builder /usr/app/spring-boot-loader/ ./

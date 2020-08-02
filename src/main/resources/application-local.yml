@@ -4,11 +4,24 @@ server:
 
 spring:
   profiles: local
-
+  application.name: producer-api
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:29092
+          autoCreateTopics: true
+          minPartitionCount: 3
+          group: output-group-1
+      default-binder: kafka
+      output:
+        binder: kafka
+        destination: iot-data
+        group: output-group-1
+        content-type: text/plain
 logging:
   level:
     root: INFO
     br.com.iot: DEBUG
   pattern:
-    console: '%highlight(<<%-5level>>) %d{dd-MM-yy HH:mm:ss.SSS} [%thread] %cyan(%logger{-1}) - %msg%n'
-    file: '%<<%-5level>> %d{dd-MM-yy HH:mm:ss.SSS} [%thread] %logger{-1} - %msg%n'
+    console: '%highlight(<<%-5level>>) %d{dd-MM-yy HH:mm:ss.SSS} [%thread] %cyan(%c{0}.%M) - %msg%n'
