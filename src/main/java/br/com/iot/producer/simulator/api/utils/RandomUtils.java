@@ -9,11 +9,10 @@ public class RandomUtils {
 
     private static final BigDecimal MIN_VALUE = new BigDecimal("25.00");
     private static final BigDecimal MAX_VALUE = new BigDecimal("100.00");
-    private static Faker faker;
+    private static final Faker faker = new Faker();
 
     private RandomUtils() {
         // utility class
-        faker = new Faker();
     }
 
     public static BigDecimal randomBigDecimal() {

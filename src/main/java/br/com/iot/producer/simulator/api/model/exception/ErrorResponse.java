@@ -1,5 +1,7 @@
 package br.com.iot.producer.simulator.api.model.exception;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -7,6 +9,7 @@ public class ErrorResponse {
 
     private final String code;
     private final String description;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final List<ErrorField> fields;
 
     public ErrorResponse(String code, String description, List<ErrorField> fields) {

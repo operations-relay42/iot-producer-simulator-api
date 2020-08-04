@@ -23,8 +23,8 @@ public class SensorEventRequest {
     @NotNull(message = "The field 'type' is invalid.")
     private final String type;
 
-    @Max(value = 60, message = "The field 'every' must be between 0 and 60.")
-    @Min(value = 0, message = "The field 'every' must be between 0 and 60.")
+    @Max(value = 60, message = "The field 'every' must be between 1 and 60.")
+    @Min(value = 1, message = "The field 'every' must be between 1 and 60.")
     private final Integer every;
 
     @JsonCreator
