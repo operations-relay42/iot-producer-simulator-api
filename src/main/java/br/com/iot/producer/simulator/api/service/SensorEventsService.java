@@ -1,7 +1,8 @@
 package br.com.iot.producer.simulator.api.service;
 
 import br.com.iot.producer.simulator.api.controller.events.request.SensorEventRequest;
-import br.com.iot.producer.simulator.api.model.event.RandomSensorEvent;
+import br.com.iot.producer.simulator.api.mapper.SensorEventMapper;
+import br.com.iot.producer.simulator.api.model.event.SensorEvent;
 import br.com.iot.producer.simulator.api.stream.producer.SensorEventProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +21,12 @@ public class SensorEventsService {
     private static final Logger LOG = LoggerFactory.getLogger(SensorEventsService.class);
 
     private final SensorEventProducer sensorEventProducer;
+    private final SensorEventMapper sensorEventMapper;
 
-    public SensorEventsService(SensorEventProducer sensorEventProducer) {this.sensorEventProducer = sensorEventProducer;}
+    public SensorEventsService(SensorEventProducer sensorEventProducer, SensorEventMapper sensorEventMapper) {
+        this.sensorEventProducer = sensorEventProducer;
+        this.sensorEventMapper = sensorEventMapper;
+    }
 
     public Mono<Void> produceEvents(List<SensorEventRequest> events) {
         Flux.fromIterable(events)
@@ -37,11 +42,13 @@ public class SensorEventsService {
     }
 
     protected Mono<Void> processSingleEvent(SensorEventRequest request) {
+        SensorEvent fistEvent = sensorEventMapper.toSensorEvent(request);
+
         Flux.range(0, request.getTotal())
                 .delayElements(Duration.ofSeconds(request.getEvery()))
-                .parallel(5)
+                .parallel()
                 .runOn(Schedulers.boundedElastic())
-                .flatMap(integer -> sendEvent(request))
+                .flatMap(integer -> sendEvent(fistEvent))
                 .subscribe(null,
                         throwable -> LOG.error("=== Could not process the events", throwable),
                         () -> LOG.debug("==== Ended parallel process -> {}", request));
@@ -49,7 +56,7 @@ public class SensorEventsService {
         return Mono.empty();
     }
 
-    protected Mono<Void> sendEvent(SensorEventRequest request) {
-        return sensorEventProducer.sendEvent(new RandomSensorEvent(request.getId(), request.getType()));
+    protected Mono<Void> sendEvent(SensorEvent event) {
+        return sensorEventProducer.sendEvent(event);
     }
 }

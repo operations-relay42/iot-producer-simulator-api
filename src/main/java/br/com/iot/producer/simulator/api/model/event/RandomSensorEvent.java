@@ -1,16 +1,20 @@
 package br.com.iot.producer.simulator.api.model.event;
 
-import br.com.iot.producer.simulator.api.model.EventType;
 import br.com.iot.producer.simulator.api.utils.RandomUtils;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 public class RandomSensorEvent extends SensorEvent {
 
-    public RandomSensorEvent(Long id, EventType eventType) {
-        this.id = id == null ? RandomUtils.randomInt() : id;
-        this.timestamp = OffsetDateTime.now().toEpochSecond();
-        this.value = RandomUtils.randomBigDecimal();
-        this.type = eventType.name();
+    @Override
+    public Long getTimestamp() {
+        return OffsetDateTime.now(ZoneOffset.UTC).toEpochSecond();
+    }
+
+    @Override
+    public BigDecimal getValue() {
+        return RandomUtils.randomBigDecimal();
     }
 }

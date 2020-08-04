@@ -3,7 +3,6 @@ package br.com.iot.producer.simulator.api.controller.events;
 import br.com.iot.producer.simulator.api.ApplicationStarter;
 import br.com.iot.producer.simulator.api.config.WebSecurityConfigStub;
 import br.com.iot.producer.simulator.api.controller.events.request.SensorEventRequest;
-import br.com.iot.producer.simulator.api.model.EventType;
 import br.com.iot.producer.simulator.api.service.SensorEventsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,7 +45,7 @@ class SensorEventsControllerTest {
 
     @Test
     void testProduceEventsOK() {
-        final SensorEventRequest request = new SensorEventRequest(10, EventType.TEMPERATURE, 10, null);
+        final SensorEventRequest request = new SensorEventRequest(10, "TEMPERATURE", 10, null, "name");
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
@@ -69,7 +68,7 @@ class SensorEventsControllerTest {
 
     @Test
     void testProduceEventsInvalidEverySmaller() {
-        final SensorEventRequest request = new SensorEventRequest(10, EventType.TEMPERATURE, -10, null);
+        final SensorEventRequest request = new SensorEventRequest(10, "TEMPERATURE", -10, null, "name");
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
@@ -81,7 +80,7 @@ class SensorEventsControllerTest {
 
     @Test
     void testProduceEventsInvalidEveryBigger() {
-        final SensorEventRequest request = new SensorEventRequest(10, EventType.TEMPERATURE, 80, null);
+        final SensorEventRequest request = new SensorEventRequest(10, "TEMPERATURE", 80, null, "name");
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
@@ -93,7 +92,7 @@ class SensorEventsControllerTest {
 
     @Test
     void testProduceEventsInvalidEveryNull() {
-        final SensorEventRequest request = new SensorEventRequest(10, EventType.TEMPERATURE, null, null);
+        final SensorEventRequest request = new SensorEventRequest(10, "TEMPERATURE", null, null, "name");
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
@@ -105,7 +104,7 @@ class SensorEventsControllerTest {
 
     @Test
     void testProduceEventsInvalidTotalNegative() {
-        final SensorEventRequest request = new SensorEventRequest(-10, EventType.TEMPERATURE, 10, null);
+        final SensorEventRequest request = new SensorEventRequest(-10, "TEMPERATURE", 10, null, "name");
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
@@ -117,7 +116,7 @@ class SensorEventsControllerTest {
 
     @Test
     void testProduceEventsInvalidTotalNull() {
-        final SensorEventRequest request = new SensorEventRequest(null, EventType.TEMPERATURE, 10, null);
+        final SensorEventRequest request = new SensorEventRequest(null, "TEMPERATURE", 10, null, "name");
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
@@ -129,7 +128,7 @@ class SensorEventsControllerTest {
 
     @Test
     void testProduceEventsInvalidEventType() {
-        final SensorEventRequest request = new SensorEventRequest(10, null, 10, null);
+        final SensorEventRequest request = new SensorEventRequest(10, null, 10, null, "name");
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()

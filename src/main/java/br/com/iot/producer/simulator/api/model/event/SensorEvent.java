@@ -4,10 +4,11 @@ import java.math.BigDecimal;
 
 public class SensorEvent {
 
-    protected Long id;
-    protected BigDecimal value;
-    protected Long timestamp;
-    protected String type;
+    private Long id;
+    private BigDecimal value;
+    private Long timestamp;
+    private String type;
+    private String name;
 
     public Long getId() {
         return id;
@@ -41,6 +42,14 @@ public class SensorEvent {
         this.type = type;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "SensorEvent{" +
@@ -48,6 +57,7 @@ public class SensorEvent {
                 ", value=" + value +
                 ", timestamp=" + timestamp +
                 ", type='" + type + '\'' +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

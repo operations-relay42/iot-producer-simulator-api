@@ -45,10 +45,16 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.kafka:spring-kafka'
 
+    implementation 'org.mapstruct:mapstruct:1.4.0.Beta3'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.0.Beta3'
+
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'io.projectreactor:reactor-test'
+
+    implementation 'com.github.javafaker:javafaker:1.0.2'
+
 }
 
 test {

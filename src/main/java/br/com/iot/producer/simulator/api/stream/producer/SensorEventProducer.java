@@ -22,7 +22,7 @@ public class SensorEventProducer {
     public Mono<Void> sendEvent(SensorEvent event) {
         return Mono.fromFuture(doSend(event))
                 .doFirst(() -> LOG.debug("==== Sending message {} ====", event))
-                .doOnSuccess(sent -> LOG.debug("==== Event sent? {}", sent))
+                .doOnSuccess(sent -> LOG.debug("==== Event sent? {}", sent.getRecordMetadata().offset()))
                 .then();
     }
 
