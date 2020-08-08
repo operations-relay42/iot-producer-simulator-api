@@ -6,7 +6,6 @@ import java.util.ResourceBundle;
 
 public class BaseErrorMessages {
 
-
     public static final BaseErrorMessages GENERIC_ERROR = new BaseErrorMessages("generic");
     public static final BaseErrorMessages GENERIC_INVALID_PARAMETERS = new BaseErrorMessages("generic.invalid.parameters");
     public static final BaseErrorMessages GENERIC_NOT_FOUND = new BaseErrorMessages("generic.notfound");

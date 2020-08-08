@@ -15,7 +15,7 @@ public class WebSecurityConfig {
 
     private final ContextPathFilter contextPathFilter;
 
-    public WebSecurityConfig(@Value("${server.context-path}") final String contextPath) {
+    public WebSecurityConfig(@Value("${spring.webflux.base-path}") final String contextPath) {
         this.contextPathFilter = new ContextPathFilter(contextPath);
     }
 

@@ -4,7 +4,7 @@ import br.com.iot.producer.simulator.api.ApplicationStarter;
 import br.com.iot.producer.simulator.api.config.WebSecurityConfigStub;
 import br.com.iot.producer.simulator.api.controller.events.request.ImmutableSensorEventRequest;
 import br.com.iot.producer.simulator.api.controller.events.request.SensorEventRequest;
-import br.com.iot.producer.simulator.api.service.SensorEventsService;
+import br.com.iot.producer.simulator.api.service.SensorEventService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +26,12 @@ import static org.mockito.Mockito.*;
 @WebFluxTest
 @ActiveProfiles("test")
 @ContextConfiguration(classes = {ApplicationStarter.class, WebSecurityConfigStub.class})
-class SensorEventsControllerTest {
+class SensorEventControllerTest {
 
     private WebTestClient webClient;
 
     @MockBean
-    private SensorEventsService sensorEventsService;
+    private SensorEventService sensorEventService;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -42,7 +42,7 @@ class SensorEventsControllerTest {
                 .configureClient()
                 .baseUrl("/events")
                 .build();
-        when(sensorEventsService.produceEvents(anyList())).thenReturn(ParallelFlux.from(Flux.empty()));
+        when(sensorEventService.produceEvents(anyList())).thenReturn(ParallelFlux.from(Flux.empty()));
     }
 
     @Test
@@ -54,7 +54,7 @@ class SensorEventsControllerTest {
                 .expectStatus()
                 .isAccepted();
 
-        verify(sensorEventsService, only()).produceEvents(anyList());
+        verify(sensorEventService, only()).produceEvents(anyList());
     }
 
     @Test
@@ -65,7 +65,7 @@ class SensorEventsControllerTest {
                 .expectStatus()
                 .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        verify(sensorEventsService, never()).produceEvents(anyList());
+        verify(sensorEventService, never()).produceEvents(anyList());
     }
 
     @Test
@@ -77,7 +77,7 @@ class SensorEventsControllerTest {
                 .expectStatus()
                 .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        verify(sensorEventsService, never()).produceEvents(anyList());
+        verify(sensorEventService, never()).produceEvents(anyList());
     }
 
     @Test
@@ -89,7 +89,7 @@ class SensorEventsControllerTest {
                 .expectStatus()
                 .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        verify(sensorEventsService, never()).produceEvents(anyList());
+        verify(sensorEventService, never()).produceEvents(anyList());
     }
 
     @Test
@@ -101,6 +101,18 @@ class SensorEventsControllerTest {
                 .expectStatus()
                 .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        verify(sensorEventsService, never()).produceEvents(anyList());
+        verify(sensorEventService, never()).produceEvents(anyList());
+    }
+
+    @Test
+    void testProduceEventsInvalidClusterNegative() {
+        final SensorEventRequest request = new ImmutableSensorEventRequest.Builder().total(10).type("TEMPERATURE").clusterSize(-1).build();
+        webClient.post()
+                .bodyValue(List.of(request))
+                .exchange()
+                .expectStatus()
+                .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        verify(sensorEventService, never()).produceEvents(anyList());
     }
 }

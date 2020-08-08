@@ -1,16 +1,19 @@
-FROM openjdk:11-jdk as builder
+FROM openjdk:11-jdk-slim as builder
 WORKDIR /usr/app
 
-ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} application.jar
-RUN java -Djarmode=layertools -jar application.jar extract
+COPY . /usr/app
+RUN ./gradlew clean build
+RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 
-FROM openjdk:11-jre
+FROM openjdk:11-jre-slim
 WORKDIR /usr/app
 RUN mkdir -p /var/log
 
-COPY --from=builder /usr/app/dependencies/ ./
-COPY --from=builder /usr/app/spring-boot-loader/ ./
-COPY --from=builder /usr/app/snapshot-dependencies/ ./
-COPY --from=builder /usr/app/application/ ./
-ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
+EXPOSE 8080
+ARG DEPENDENCY=/usr/app/build/dependency
+
+COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
+COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
+COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
+
+ENTRYPOINT ["java","-noverify","-cp","app:app/lib/*","br.com.iot.producer.simulator.api.ApplicationStarter"]

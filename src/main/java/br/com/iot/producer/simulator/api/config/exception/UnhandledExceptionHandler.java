@@ -45,12 +45,14 @@ public class UnhandledExceptionHandler implements WebExceptionHandler {
     @Override
     public Mono<Void> handle(@NonNull final ServerWebExchange exchange, @NonNull final Throwable ex) {
         try {
-            LOG.error("error", ex);
             if (ex instanceof MethodNotAllowedException) {
+                LOG.error("Exception: {}", ex.getLocalizedMessage());
                 return handleMethodNotAllowedException(exchange, (MethodNotAllowedException) ex);
             } else if (ex instanceof ResponseStatusException) {
+                LOG.error("Exception: {}", ex.getLocalizedMessage());
                 return handleResourceNotFoundException(exchange, (ResponseStatusException) ex);
             } else {
+                LOG.error("Exception: ", ex);
                 return handleGenericException(exchange);
             }
         } catch (final JsonProcessingException e) {

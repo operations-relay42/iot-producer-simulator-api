@@ -43,8 +43,8 @@ dependencies {
 
     implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
-    implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'io.projectreactor.kafka:reactor-kafka:1.2.2.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-stream'
+    implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka'
 
     implementation 'org.immutables:value:2.8.8'
     annotationProcessor 'org.immutables:value:2.8.8'
@@ -88,9 +88,9 @@ wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
 
-bootJar {
-    layered()
-}
+//bootJar {
+//    layered()
+//}
 
 jacocoTestReport {
     reports {
@@ -101,7 +101,7 @@ jacocoTestReport {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it,
                     exclude: [
-                            'br/com/iot/producer/simulator/api/ApplicationStartup.class',
+                            'br/com/iot/producer/simulator/api/ApplicationStarter.class',
                             'br/com/iot/producer/simulator/api/exception/**',
                             'br/com/iot/producer/simulator/api/mapper/**',
                             'br/com/iot/producer/simulator/api/config/**',

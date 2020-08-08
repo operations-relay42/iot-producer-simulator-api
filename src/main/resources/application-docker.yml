@@ -1,40 +1,16 @@
 server:
-  port: 8091
-  context-path: /producer-api
+  port: 8080
 
 spring:
-  kafka:
-    producer:
-      bootstrap-servers: kafka_0:29092,kafka_0:29092
-      key-serializer: org.apache.kafka.common.serialization.LongSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
   profiles: docker
-  application.name: producer-api
-#  cloud:
-#    stream:
-#      kafka:
-#        binder:
-#          brokers: localhost:9092
-#          autoCreateTopics: true
-#          minPartitionCount: 3
-#          group: output-group-1
-#          content-type: application/json
-#      default-binder: kafka
-#      output:
-#        binder: kafka
-#        destination: iot-data
-#        group: output-group-1
-#        content-type: application/json
-#        producer:
-#          useNativeEncoding: true
-#          keySerde:
-#          valueSerde:
-
-
-
-logging:
-  level:
-    root: INFO
-    br.com.iot: DEBUG
-  pattern:
-    console: '%highlight(<<%-5level>>) %d{dd-MM-yy HH:mm:ss.SSS} [%thread] %cyan(%c{0}.%M) - %msg%n'
+  #  kafka:
+  #    producer:
+  #    bootstrap-servers: kafka_0:29092,kafka_0:29092
+  #    key-serializer: org.apache.kafka.common.serialization.LongSerializer
+  #    value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  #  application.name: producer-api
+  cloud:
+    stream:
+      kafka.binder:
+        brokers:
+          - kafka_0:29092,kafka_0:29092

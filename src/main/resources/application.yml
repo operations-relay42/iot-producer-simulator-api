@@ -1,0 +1,34 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name:  producer-api
+  webflux:
+    base-path: /producer-api
+  cloud:
+    stream:
+      kafka.binder:
+        brokers:
+          - localhost:9092
+        producer-properties:
+          client.id: producer-api
+          key.serializer: org.apache.kafka.common.serialization.LongSerializer
+          value.serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      output:
+        destination: iot-data
+        group: output-group-1
+        content-type: application/json
+        nativeEncoding: true
+
+logging:
+  level:
+    root: INFO
+    br.com.iot: DEBUG
+  pattern:
+    console: '%highlight(<<%-5level>>) %d{dd-MM-yy HH:mm:ss.SSS} [%thread] %cyan(%c{0}.%M) - %msg%n'
+
+management:
+  endpoints:
+    web:
+      base-path: /
