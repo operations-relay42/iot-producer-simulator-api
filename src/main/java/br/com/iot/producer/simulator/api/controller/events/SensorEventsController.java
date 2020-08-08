@@ -16,20 +16,26 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/sensor/events")
+@RequestMapping("/events")
 public class SensorEventsController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SensorEventsController.class);
 
     private final SensorEventsService sensorEventsService;
 
-    public SensorEventsController(SensorEventsService sensorEventsService) {this.sensorEventsService = sensorEventsService;}
+    public SensorEventsController(SensorEventsService sensorEventsService) {
+        this.sensorEventsService = sensorEventsService;
+    }
 
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public Mono<Void> produceEvents(@NotEmpty @RequestBody List<@Valid SensorEventRequest> request) {
-        return sensorEventsService.produceEvents(request)
-                .doFirst(() -> LOG.info("==== Received request -> {}", request))
-                .doOnSuccess(unused -> LOG.info("===== Processing in background ===="));
+        sensorEventsService.produceEvents(request)
+                .doOnSubscribe(subscription -> LOG.info("==== Received request -> {}", request))
+                .subscribe(null,
+                        throwable -> LOG.error("=== Failed to process request " + request, throwable),
+                        () -> LOG.info("===== Process Ended for request -> {}", request));
+
+        return Mono.empty();
     }
 }

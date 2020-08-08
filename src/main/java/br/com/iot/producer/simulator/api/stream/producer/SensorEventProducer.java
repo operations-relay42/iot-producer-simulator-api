@@ -17,7 +17,9 @@ public class SensorEventProducer {
 
     private final KafkaTemplate<Long, SensorEvent> kafkaTemplate;
 
-    public SensorEventProducer(KafkaTemplate<Long, SensorEvent> kafkaTemplate) {this.kafkaTemplate = kafkaTemplate;}
+    public SensorEventProducer(KafkaTemplate<Long, SensorEvent> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
     public Mono<Void> sendEvent(SensorEvent event) {
         return Mono.fromFuture(doSend(event))

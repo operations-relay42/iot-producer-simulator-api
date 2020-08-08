@@ -1,9 +1,7 @@
 package br.com.iot.producer.simulator.api.controller.events.request;
 
-import br.com.iot.producer.simulator.api.utils.RandomUtils;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.StringUtils;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.immutables.value.Value;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -11,59 +9,32 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 
-public class SensorEventRequest {
+@Value.Immutable
+@Value.Style(builder = "new")
+@JsonDeserialize(builder = ImmutableSensorEventRequest.Builder.class)
+public interface SensorEventRequest {
 
-    private final Long id;
-    private final String name;
+    int DEFAULT_HEART_BEAT = 10;
+    int DEFAULT_CLUSTER_SIZE = 1;
 
     @Positive(message = "The field 'total' must be a positive.")
     @NotNull(message = "The field 'total' is mandatory.")
-    private final Integer total;
+    Integer getTotal();
 
     @NotNull(message = "The field 'type' is invalid.")
-    private final String type;
+    String getType();
 
-    @Max(value = 60, message = "The field 'every' must be between 1 and 60.")
-    @Min(value = 1, message = "The field 'every' must be between 1 and 60.")
-    private final Integer every;
-
-    @JsonCreator
-    public SensorEventRequest(@JsonProperty("total") Integer total, @JsonProperty("type") String type, @JsonProperty("every") Integer every, @JsonProperty("id") Long id, @JsonProperty("name") String name) {
-        this.total = total;
-        this.type = type;
-        this.every = every == null ? 10 : every;
-        this.id = id == null ? RandomUtils.randomInt() : id;
-        this.name = StringUtils.defaultString(name, RandomUtils.randomName());
+    @Max(value = 60, message = "The field 'heartBeat' must be between 1 and 60.")
+    @Min(value = 1, message = "The field 'heartBeat' must be between 1 and 60.")
+    @Value.Default
+    default Integer getHeartBeat() {
+        return DEFAULT_HEART_BEAT;
     }
 
-    public Integer getTotal() {
-        return total;
+    @Min(value = 1, message = "The field 'clusterSize' must be between 1 and 60.")
+    @Value.Default
+    default Integer getClusterSize() {
+        return DEFAULT_CLUSTER_SIZE;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public Integer getEvery() {
-        return every;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return "SensorEventRequest{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", total=" + total +
-                ", type='" + type + '\'' +
-                ", every=" + every +
-                '}';
-    }
 }

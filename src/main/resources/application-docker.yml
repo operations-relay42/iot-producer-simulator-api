@@ -5,11 +5,10 @@ server:
 spring:
   kafka:
     producer:
-      bootstrap-servers: localhost:9092
-      client-id: producer-api
+      bootstrap-servers: kafka_0:29092,kafka_0:29092
       key-serializer: org.apache.kafka.common.serialization.LongSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-  profiles: local
+  profiles: docker
   application.name: producer-api
 #  cloud:
 #    stream:

@@ -2,6 +2,7 @@ package br.com.iot.producer.simulator.api.controller.events;
 
 import br.com.iot.producer.simulator.api.ApplicationStarter;
 import br.com.iot.producer.simulator.api.config.WebSecurityConfigStub;
+import br.com.iot.producer.simulator.api.controller.events.request.ImmutableSensorEventRequest;
 import br.com.iot.producer.simulator.api.controller.events.request.SensorEventRequest;
 import br.com.iot.producer.simulator.api.service.SensorEventsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.ParallelFlux;
 
 import java.util.List;
 
@@ -38,14 +40,14 @@ class SensorEventsControllerTest {
     void setUp() {
         webClient = WebTestClient.bindToApplicationContext(applicationContext)
                 .configureClient()
-                .baseUrl("/sensor/events")
+                .baseUrl("/events")
                 .build();
-        when(sensorEventsService.produceEvents(anyList())).thenReturn(Mono.empty());
+        when(sensorEventsService.produceEvents(anyList())).thenReturn(ParallelFlux.from(Flux.empty()));
     }
 
     @Test
     void testProduceEventsOK() {
-        final SensorEventRequest request = new SensorEventRequest(10, "TEMPERATURE", 10, null, "name");
+        final SensorEventRequest request = new ImmutableSensorEventRequest.Builder().total(10).type("TEMPERATURE").build();
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
@@ -67,8 +69,8 @@ class SensorEventsControllerTest {
     }
 
     @Test
-    void testProduceEventsInvalidEverySmaller() {
-        final SensorEventRequest request = new SensorEventRequest(10, "TEMPERATURE", -10, null, "name");
+    void testProduceEventsInvalidHearthSmaller() {
+        final SensorEventRequest request = new ImmutableSensorEventRequest.Builder().total(10).type("TEMPERATURE").heartBeat(-1).build();
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
@@ -79,8 +81,8 @@ class SensorEventsControllerTest {
     }
 
     @Test
-    void testProduceEventsInvalidEveryBigger() {
-        final SensorEventRequest request = new SensorEventRequest(10, "TEMPERATURE", 80, null, "name");
+    void testProduceEventsInvalidHeartBeatBigger() {
+        final SensorEventRequest request = new ImmutableSensorEventRequest.Builder().total(10).type("TEMPERATURE").heartBeat(80).build();
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
@@ -88,47 +90,11 @@ class SensorEventsControllerTest {
                 .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
 
         verify(sensorEventsService, never()).produceEvents(anyList());
-    }
-
-    @Test
-    void testProduceEventsInvalidEveryNull() {
-        final SensorEventRequest request = new SensorEventRequest(10, "TEMPERATURE", null, null, "name");
-        webClient.post()
-                .bodyValue(List.of(request))
-                .exchange()
-                .expectStatus()
-                .isAccepted();
-
-        verify(sensorEventsService, only()).produceEvents(anyList());
     }
 
     @Test
     void testProduceEventsInvalidTotalNegative() {
-        final SensorEventRequest request = new SensorEventRequest(-10, "TEMPERATURE", 10, null, "name");
-        webClient.post()
-                .bodyValue(List.of(request))
-                .exchange()
-                .expectStatus()
-                .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
-
-        verify(sensorEventsService, never()).produceEvents(anyList());
-    }
-
-    @Test
-    void testProduceEventsInvalidTotalNull() {
-        final SensorEventRequest request = new SensorEventRequest(null, "TEMPERATURE", 10, null, "name");
-        webClient.post()
-                .bodyValue(List.of(request))
-                .exchange()
-                .expectStatus()
-                .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
-
-        verify(sensorEventsService, never()).produceEvents(anyList());
-    }
-
-    @Test
-    void testProduceEventsInvalidEventType() {
-        final SensorEventRequest request = new SensorEventRequest(10, null, 10, null, "name");
+        final SensorEventRequest request = new ImmutableSensorEventRequest.Builder().total(-10).type("TEMPERATURE").build();
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
