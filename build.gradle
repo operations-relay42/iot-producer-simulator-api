@@ -88,9 +88,9 @@ wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
 
-//bootJar {
-//    layered()
-//}
+bootJar {
+    layered()
+}
 
 jacocoTestReport {
     reports {
