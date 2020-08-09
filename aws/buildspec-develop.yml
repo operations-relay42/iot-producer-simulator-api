@@ -4,8 +4,6 @@ phases:
   pre_build:
     commands:
       - REPOSITORY_URI=$DOCKER_HUB_REPO
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
       - docker login --username=$DOCKER_HUB_USER --password=$DOCKER_HUB_PASS
   build:
     commands:
@@ -14,13 +12,11 @@ phases:
       - ./gradlew build
       - echo Building the Docker image...
       - docker build -t $REPOSITORY_URI:producer-latest-develop -f docker/dev.Dockerfile .
-      - docker tag $REPOSITORY_URI:producer-latest-develop $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
       - docker push $REPOSITORY_URI:producer-latest-develop
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
 reports:
   JacocoReport:
     files:
