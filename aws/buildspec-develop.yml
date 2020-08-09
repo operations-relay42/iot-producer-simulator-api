@@ -25,7 +25,7 @@ reports:
   JacocoReport:
     files:
       - '**/*'
-    base-directory: build/reports/jacoco
+    base-directory: build/test-results/test
 cache:
   paths:
     - '/root/.gradle/wrapper/**/*'

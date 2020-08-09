@@ -3,14 +3,9 @@ server:
 
 spring:
   profiles: docker
-  #  kafka:
-  #    producer:
-  #    bootstrap-servers: kafka_0:29092,kafka_0:29092
-  #    key-serializer: org.apache.kafka.common.serialization.LongSerializer
-  #    value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-  #  application.name: producer-api
   cloud:
     stream:
       kafka.binder:
         brokers:
-          - kafka_0:29092,kafka_0:29092
+          - kafka_0:29092
+          - kafka_1:29093
