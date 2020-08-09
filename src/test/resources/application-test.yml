@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  context-path: /producer-api
+
+spring:
+  main:
+    banner-mode: off
+    lazy-initialization: true
+  profiles: test
+
+logging:
+  level:
+    root: OFF
+    org.springframework: OFF
+    br.com.iot: DEBUG
+  pattern:
+    console: '%highlight(<<%-5level>>) %d{HH:mm:ss.SSS} [%thread] %cyan(%c{0}) - %msg%n %ex{short}'

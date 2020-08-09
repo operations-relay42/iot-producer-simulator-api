@@ -2,3 +2,13 @@ spring:
   application.name: iot-producer-simulator
   profiles: local
   cloud.config.enabled: false
+---
+spring:
+  application.name: iot-producer-simulator
+  profiles: test
+  cloud.config.enabled: false
+---
+spring:
+  application.name: iot-producer-simulator
+  profiles: docker
+  cloud.config.enabled: false

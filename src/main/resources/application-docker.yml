@@ -1,0 +1,11 @@
+server:
+  port: 8080
+
+spring:
+  profiles: docker
+  cloud:
+    stream:
+      kafka.binder:
+        brokers:
+          - kafka_0:29092
+          - kafka_1:29093
