@@ -2,14 +2,8 @@ plugins {
     id 'com.adarshr.test-logger' version '2.1.0'
     id 'org.springframework.boot' version '2.3.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'nebula.release' version '13.0.0'
     id 'java'
     id 'jacoco'
-}
-
-nebulaRelease {
-    addReleaseBranchPattern(/master/)
-    addReleaseBranchPattern(/develop/)
 }
 
 group = 'br.com.iot'
