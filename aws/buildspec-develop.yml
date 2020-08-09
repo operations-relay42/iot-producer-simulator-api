@@ -13,7 +13,7 @@ phases:
       - echo Building application...
       - ./gradlew build
       - echo Building the Docker image...
-      - docker build -t $REPOSITORY_URI:producer-latest-develop -f docker/Dockerfile .
+      - docker build -t $REPOSITORY_URI:producer-latest-develop -f docker/dev.Dockerfile .
       - docker tag $REPOSITORY_URI:producer-latest-develop $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
