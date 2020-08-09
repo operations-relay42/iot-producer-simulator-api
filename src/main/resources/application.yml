@@ -8,18 +8,19 @@ spring:
     base-path: /producer-api
   cloud:
     stream:
-      kafka.binder:
-        brokers:
-          - localhost:9092
-        producer-properties:
-          client.id: producer-api
-          key.serializer: org.apache.kafka.common.serialization.LongSerializer
-          value.serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      output:
-        destination: iot-data
-        group: output-group-1
-        content-type: application/json
-        nativeEncoding: true
+      bindings:
+        iot-data:
+          destination: iot-data
+          group: output-group-1
+          content-type: application/json
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
+          producer-properties:
+            client.id: producer-api
+            key.serializer: org.apache.kafka.common.serialization.LongSerializer
+            value.serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 logging:
   level:

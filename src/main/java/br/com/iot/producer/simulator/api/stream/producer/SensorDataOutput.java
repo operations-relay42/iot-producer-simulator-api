@@ -4,7 +4,7 @@ import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;
 
 public interface SensorDataOutput {
-    String OUTPUT = "sensor-data-output";
+    String OUTPUT = "iot-data";
 
     @Output(OUTPUT)
     MessageChannel output();
