@@ -1,20 +1,10 @@
 package br.com.iot.producer.simulator.api.model.exception;
 
-public class ErrorField {
+import org.immutables.value.Value;
 
-    private final String field;
-    private final String description;
+@Value.Immutable
+public interface ErrorField {
+    String getField();
 
-    public ErrorField(String field, String description) {
-        this.field = field;
-        this.description = description;
-    }
-
-    public String getField() {
-        return field;
-    }
-
-    public String getDescription() {
-        return description;
-    }
+    String getDescription();
 }

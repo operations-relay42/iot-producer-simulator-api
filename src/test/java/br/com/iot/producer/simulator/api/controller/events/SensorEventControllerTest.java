@@ -63,7 +63,7 @@ class SensorEventControllerTest {
                 .bodyValue(List.of())
                 .exchange()
                 .expectStatus()
-                .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+                .isBadRequest();
 
         verify(sensorEventService, never()).produceEvents(anyList());
     }
@@ -75,7 +75,7 @@ class SensorEventControllerTest {
                 .bodyValue(List.of(request))
                 .exchange()
                 .expectStatus()
-                .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+                .isBadRequest();
 
         verify(sensorEventService, never()).produceEvents(anyList());
     }
@@ -87,7 +87,7 @@ class SensorEventControllerTest {
                 .bodyValue(List.of(request))
                 .exchange()
                 .expectStatus()
-                .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+                .isBadRequest();
 
         verify(sensorEventService, never()).produceEvents(anyList());
     }
@@ -99,7 +99,7 @@ class SensorEventControllerTest {
                 .bodyValue(List.of(request))
                 .exchange()
                 .expectStatus()
-                .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+                .isBadRequest();
 
         verify(sensorEventService, never()).produceEvents(anyList());
     }
@@ -111,7 +111,7 @@ class SensorEventControllerTest {
                 .bodyValue(List.of(request))
                 .exchange()
                 .expectStatus()
-                .isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+                .isBadRequest();
 
         verify(sensorEventService, never()).produceEvents(anyList());
     }
