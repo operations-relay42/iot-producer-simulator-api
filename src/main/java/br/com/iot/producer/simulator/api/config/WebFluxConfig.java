@@ -26,5 +26,4 @@ public class WebFluxConfig implements WebFluxConfigurer {
         configurer.defaultCodecs().jackson2JsonEncoder(encoder);
         configurer.defaultCodecs().jackson2JsonDecoder(decoder);
     }
-
 }

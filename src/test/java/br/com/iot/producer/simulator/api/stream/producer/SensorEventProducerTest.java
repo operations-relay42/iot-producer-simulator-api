@@ -10,18 +10,16 @@ import org.springframework.messaging.MessageChannel;
 import reactor.test.StepVerifier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class SensorEventProducerTest {
 
     private SensorEventProducer testClass;
-    private SensorDataOutput dataOutput;
     private MessageChannel messageChannel;
 
     @BeforeEach
     void setUp() {
-        dataOutput = mock(SensorDataOutput.class);
+        SensorDataOutput dataOutput = mock(SensorDataOutput.class);
         messageChannel = mock(MessageChannel.class);
 
         when(messageChannel.send(any())).thenReturn(true);

@@ -24,4 +24,4 @@ reports:
     base-directory: build/test-results/test
 cache:
   paths:
-    - '/root/.gradle/wrapper/**/*'
+    - '.gradle/wrapper/**/*'

@@ -4,7 +4,7 @@ import com.github.javafaker.Faker;
 
 import java.math.BigDecimal;
 
-public class RandomUtils {
+public final class RandomUtils {
 
     private static final BigDecimal MIN_VALUE = new BigDecimal("25.00");
     private static final BigDecimal MAX_VALUE = new BigDecimal("100.00");

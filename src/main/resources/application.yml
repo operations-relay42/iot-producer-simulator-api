@@ -21,7 +21,12 @@ spring:
             client.id: producer-api
             key.serializer: org.apache.kafka.common.serialization.LongSerializer
             value.serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
+  security:
+    oauth2:
+      resourceserver:
+        jwk:
+          jwk-set-uri: https://dev-928245.okta.com/oauth2/ausp92bbxrQ9m9Ojq4x6/.well-known/oauth-authorization-server
+          issuer-uri: https://dev-928245.okta.com/oauth2/ausp92bbxrQ9m9Ojq4x6
 logging:
   level:
     root: INFO
