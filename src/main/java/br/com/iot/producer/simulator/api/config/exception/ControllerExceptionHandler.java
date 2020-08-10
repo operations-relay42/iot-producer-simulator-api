@@ -73,7 +73,7 @@ public class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(AccessDeniedException.class)
     public ErrorResponse handleAccessDeniedException(AccessDeniedException exception) {
-        LOG.error("=== AccessDeniedException {}", exception.getLocalizedMessage());
+        LOG.error("=== AccessDeniedException ", exception);
         return ImmutableErrorResponse.builder()
                 .description(BaseErrorMessages.GENERIC_UNAUTHORIZED_EXCEPTION.getMessage())
                 .code(AccessDeniedException.class.getSimpleName())

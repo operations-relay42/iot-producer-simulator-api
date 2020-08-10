@@ -1,8 +1,6 @@
 package br.com.iot.producer.simulator.api.config.filter;
 
 import br.com.iot.producer.simulator.api.exception.NotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -10,8 +8,6 @@ import reactor.core.publisher.Mono;
 
 /** Webflux does not se the context path automatically, so we do that here for every request */
 public class ContextPathFilter implements WebFilter {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ContextPathFilter.class);
 
     private final String context;
 

@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoders;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
 
@@ -28,17 +30,24 @@ public class WebSecurityConfig {
                 .addFilterAt(this.contextPathFilter, SecurityWebFiltersOrder.FIRST)
                 .formLogin().disable()
                 .csrf().disable()
-                .httpBasic().and()
+                .httpBasic().disable()
                 .logout().disable()
                 .authorizeExchange()
                 .pathMatchers("/health").permitAll()
-                .anyExchange().authenticated()
+                .anyExchange().hasAuthority("SCOPE_admin")
                 .and()
-                .exceptionHandling()
+                .oauth2ResourceServer()
                 .accessDeniedHandler((exchange, denied) -> Mono.error(new UnauthorizedException(denied)))
                 .authenticationEntryPoint((exchange, e) -> Mono.error(new UnauthenticatedException(e)))
-                .and()
+                .jwt()
+                .and().and()
                 .build();
+
+
     }
 
+    @Bean
+    public ReactiveJwtDecoder jwtDecoder(@Value("${spring.security.oauth2.resourceserver.jwk.issuer-uri}") String issuerUri) {
+        return ReactiveJwtDecoders.fromOidcIssuerLocation(issuerUri);
+    }
 }

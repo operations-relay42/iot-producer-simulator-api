@@ -1,5 +1,7 @@
 package br.com.iot.producer.simulator.api.model.exception;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
@@ -21,7 +23,7 @@ public class BaseErrorMessages {
     }
 
     public BaseErrorMessages withParams(String... params) {
-        this.params = params;
+        this.params = ArrayUtils.clone(params);
         return this;
     }
 

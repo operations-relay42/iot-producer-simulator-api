@@ -11,12 +11,12 @@ phases:
       - echo Building application...
       - ./gradlew build
       - echo Building the Docker image...
-      - docker build -t $REPOSITORY_URI:producer-latest-develop -f docker/dev.Dockerfile .
+      - docker build -t $REPOSITORY_URI:producer-latest -f docker/dev.Dockerfile .
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
-      - docker push $REPOSITORY_URI:producer-latest-develop
+      - docker push $REPOSITORY_URI:producer-latest
 reports:
   JacocoReport:
     files:
