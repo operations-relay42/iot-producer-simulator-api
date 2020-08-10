@@ -1,7 +1,7 @@
 package br.com.iot.producer.simulator.api.stream.producer;
 
-import br.com.iot.producer.simulator.api.model.event.SensorEvent;
-import br.com.iot.producer.simulator.api.model.event.SensorEventSub;
+import br.com.iot.producer.simulator.api.model.event.Event;
+import br.com.iot.producer.simulator.api.model.event.EventSub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -12,25 +12,25 @@ import reactor.test.StepVerifier;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-class SensorEventProducerTest {
+class EventProducerTest {
 
-    private SensorEventProducer testClass;
+    private EventProducer testClass;
     private MessageChannel messageChannel;
 
     @BeforeEach
     void setUp() {
-        SensorDataOutput dataOutput = mock(SensorDataOutput.class);
+        EventDataOutput dataOutput = mock(EventDataOutput.class);
         messageChannel = mock(MessageChannel.class);
 
         when(messageChannel.send(any())).thenReturn(true);
         when(dataOutput.output()).thenReturn(messageChannel);
 
-        testClass = new SensorEventProducer(dataOutput);
+        testClass = new EventProducer(dataOutput);
     }
 
     @Test
     void testBuildMessage() {
-        final Message<SensorEvent> actual = testClass.buildMessage(new SensorEventSub());
+        final Message<Event> actual = testClass.buildMessage(new EventSub());
 
         assertEquals(12345L, actual.getHeaders().get(KafkaHeaders.MESSAGE_KEY));
     }
@@ -39,7 +39,7 @@ class SensorEventProducerTest {
     void testSendEvent() {
 
 
-        StepVerifier.create(testClass.sendEvent(new SensorEventSub())).verifyComplete();
+        StepVerifier.create(testClass.sendEvent(new EventSub())).verifyComplete();
         verify(messageChannel, times(1)).send(any());
     }
 }

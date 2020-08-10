@@ -1,6 +1,6 @@
 package br.com.iot.producer.simulator.api.stream.producer;
 
-import br.com.iot.producer.simulator.api.model.event.SensorEvent;
+import br.com.iot.producer.simulator.api.model.event.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -12,18 +12,18 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-@EnableBinding(SensorDataOutput.class)
-public class SensorEventProducer {
+@EnableBinding(EventDataOutput.class)
+public class EventProducer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SensorEventProducer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EventProducer.class);
 
     private final MessageChannel messageChannel;
 
-    public SensorEventProducer(SensorDataOutput dataOutput) {
+    public EventProducer(EventDataOutput dataOutput) {
         this.messageChannel = dataOutput.output();
     }
 
-    public Mono<Void> sendEvent(SensorEvent event) {
+    public Mono<Void> sendEvent(Event event) {
         return Mono.fromSupplier(() -> buildMessage(event))
                 .doFirst(() -> LOG.debug("==== Sending message {}", event))
                 .map(messageChannel::send)
@@ -31,7 +31,7 @@ public class SensorEventProducer {
                 .then();
     }
 
-    protected Message<SensorEvent> buildMessage(SensorEvent event) {
+    protected Message<Event> buildMessage(Event event) {
         return MessageBuilder.withPayload(event)
                 .setHeader(KafkaHeaders.MESSAGE_KEY, event.getId())
                 .build();

@@ -2,8 +2,9 @@ package br.com.iot.producer.simulator.api.model.event;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.Map;
 
-public interface SensorEvent {
+public interface Event {
 
     Long getId();
 
@@ -14,4 +15,6 @@ public interface SensorEvent {
     String getType();
 
     String getName();
+
+    Long getClusterId();
 }

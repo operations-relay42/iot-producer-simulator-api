@@ -2,9 +2,9 @@ package br.com.iot.producer.simulator.api.controller.events;
 
 import br.com.iot.producer.simulator.api.ApplicationStarter;
 import br.com.iot.producer.simulator.api.config.WebSecurityConfigStub;
-import br.com.iot.producer.simulator.api.controller.events.request.ImmutableSensorEventRequest;
-import br.com.iot.producer.simulator.api.controller.events.request.SensorEventRequest;
-import br.com.iot.producer.simulator.api.service.SensorEventService;
+import br.com.iot.producer.simulator.api.controller.events.request.ImmutableClusterEventRequest;
+import br.com.iot.producer.simulator.api.controller.events.request.ClusterEventRequest;
+import br.com.iot.producer.simulator.api.service.ClusterService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +24,12 @@ import static org.mockito.Mockito.*;
 @WebFluxTest
 @ActiveProfiles("test")
 @ContextConfiguration(classes = {ApplicationStarter.class, WebSecurityConfigStub.class})
-class SensorEventControllerTest {
+class ClusterControllerTest {
 
     private WebTestClient webClient;
 
     @MockBean
-    private SensorEventService sensorEventService;
+    private ClusterService clusterService;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -38,21 +38,21 @@ class SensorEventControllerTest {
     void setUp() {
         webClient = WebTestClient.bindToApplicationContext(applicationContext)
                 .configureClient()
-                .baseUrl("/events")
+                .baseUrl("/clusters")
                 .build();
-        when(sensorEventService.produceEvents(anyList())).thenReturn(ParallelFlux.from(Flux.empty()));
+        when(clusterService.processAllClusters(anyList())).thenReturn(ParallelFlux.from(Flux.empty()));
     }
 
     @Test
     void testProduceEventsOK() {
-        final SensorEventRequest request = new ImmutableSensorEventRequest.Builder().total(10).type("TEMPERATURE").build();
+        final ClusterEventRequest request = new ImmutableClusterEventRequest.Builder().total(10).type("TEMPERATURE").build();
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
                 .expectStatus()
                 .isAccepted();
 
-        verify(sensorEventService, only()).produceEvents(anyList());
+        verify(clusterService, only()).processAllClusters(anyList());
     }
 
     @Test
@@ -63,54 +63,54 @@ class SensorEventControllerTest {
                 .expectStatus()
                 .isBadRequest();
 
-        verify(sensorEventService, never()).produceEvents(anyList());
+        verify(clusterService, never()).processAllClusters(anyList());
     }
 
     @Test
     void testProduceEventsInvalidHearthSmaller() {
-        final SensorEventRequest request = new ImmutableSensorEventRequest.Builder().total(10).type("TEMPERATURE").heartBeat(-1).build();
+        final ClusterEventRequest request = new ImmutableClusterEventRequest.Builder().total(10).type("TEMPERATURE").heartBeat(-1).build();
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
                 .expectStatus()
                 .isBadRequest();
 
-        verify(sensorEventService, never()).produceEvents(anyList());
+        verify(clusterService, never()).processAllClusters(anyList());
     }
 
     @Test
     void testProduceEventsInvalidHeartBeatBigger() {
-        final SensorEventRequest request = new ImmutableSensorEventRequest.Builder().total(10).type("TEMPERATURE").heartBeat(80).build();
+        final ClusterEventRequest request = new ImmutableClusterEventRequest.Builder().total(10).type("TEMPERATURE").heartBeat(80).build();
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
                 .expectStatus()
                 .isBadRequest();
 
-        verify(sensorEventService, never()).produceEvents(anyList());
+        verify(clusterService, never()).processAllClusters(anyList());
     }
 
     @Test
     void testProduceEventsInvalidTotalNegative() {
-        final SensorEventRequest request = new ImmutableSensorEventRequest.Builder().total(-10).type("TEMPERATURE").build();
+        final ClusterEventRequest request = new ImmutableClusterEventRequest.Builder().total(-10).type("TEMPERATURE").build();
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
                 .expectStatus()
                 .isBadRequest();
 
-        verify(sensorEventService, never()).produceEvents(anyList());
+        verify(clusterService, never()).processAllClusters(anyList());
     }
 
     @Test
     void testProduceEventsInvalidClusterNegative() {
-        final SensorEventRequest request = new ImmutableSensorEventRequest.Builder().total(10).type("TEMPERATURE").clusterSize(-1).build();
+        final ClusterEventRequest request = new ImmutableClusterEventRequest.Builder().total(10).type("TEMPERATURE").clusterSize(-1).build();
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
                 .expectStatus()
                 .isBadRequest();
 
-        verify(sensorEventService, never()).produceEvents(anyList());
+        verify(clusterService, never()).processAllClusters(anyList());
     }
 }

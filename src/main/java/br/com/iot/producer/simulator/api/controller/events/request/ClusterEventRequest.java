@@ -9,36 +9,39 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+import static br.com.iot.producer.simulator.api.model.constant.EventsConstant.*;
+
 @Value.Immutable
 @Value.Style(builder = "new")
-@JsonDeserialize(builder = ImmutableSensorEventRequest.Builder.class)
-public interface SensorEventRequest {
-
-    int DEFAULT_HEART_BEAT = 10;
-    int DEFAULT_CLUSTER_SIZE = 1;
+@JsonDeserialize(builder = ImmutableClusterEventRequest.Builder.class)
+public interface ClusterEventRequest {
 
     /*It needed nullable and notnull, otherwise it would throw java.lang.IllegalStateException
     and we cannot get the proper message.*/
-    @Positive(message = "{invalid.event.request.total.positive}")
-    @NotNull(message = "{mandatory.event.request.total}")
+    @Positive(message = "{invalid.request.total.positive}")
+    @NotNull(message = "{mandatory.request.total}")
     @Nullable
     Integer getTotal();
 
-    @NotNull(message = "{mandatory.event.request.type}")
+    @NotNull(message = "{mandatory.request.type}")
     @Nullable
     String getType();
 
-    @Max(value = 60, message = "{invalid.event.request.total.heartBeat.max}")
-    @Min(value = 1, message = "{invalid.event.request.total.heartBeat.min}")
+    @Max(value = MAX_HEART_BEAT, message = "{invalid.event.total.heartBeat}")
+    @Min(value = MIN_HEART_BEAT, message = "{invalid.event.total.heartBeat}")
     @Value.Default
     default Integer getHeartBeat() {
         return DEFAULT_HEART_BEAT;
     }
 
-    @Min(value = 1, message = "The field 'clusterSize' start at 1")
+    @Min(value = MIN_CLUSTER_SIZE, message = "{invalid.cluster.request.total.clusterSize}")
+    @Max(value = MAX_CLUSTER_SIZE, message = "{invalid.cluster.request.total.clusterSize}")
     @Value.Default
     default Integer getClusterSize() {
         return DEFAULT_CLUSTER_SIZE;
     }
+
+    @Nullable
+    Long getClusterId();
 
 }

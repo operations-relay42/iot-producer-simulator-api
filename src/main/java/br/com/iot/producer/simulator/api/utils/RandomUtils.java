@@ -1,8 +1,12 @@
 package br.com.iot.producer.simulator.api.utils;
 
+import br.com.iot.producer.simulator.api.model.constant.EventsConstant;
 import com.github.javafaker.Faker;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import static br.com.iot.producer.simulator.api.model.constant.EventsConstant.*;
 
 public final class RandomUtils {
 
@@ -13,11 +17,11 @@ public final class RandomUtils {
     private RandomUtils() { /* utility class */ }
 
     public static BigDecimal randomBigDecimal() {
-        return MIN_VALUE.add(BigDecimal.valueOf(Math.random()).multiply(MAX_VALUE.subtract(MIN_VALUE)));
+        return MIN_VALUE.add(BigDecimal.valueOf(Math.random()).multiply(MAX_VALUE.subtract(MIN_VALUE))).setScale(4, RoundingMode.CEILING);
     }
 
     public static long randomInt() {
-        return faker.number().randomNumber();
+        return faker.number().numberBetween(MIN_CLUSTER_SIZE, MAX_CLUSTER_SIZE);
     }
 
     public static String randomName() {

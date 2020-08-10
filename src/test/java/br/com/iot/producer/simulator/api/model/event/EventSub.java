@@ -3,8 +3,10 @@ package br.com.iot.producer.simulator.api.model.event;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.Collections;
+import java.util.Map;
 
-public class SensorEventSub implements SensorEvent {
+public class EventSub implements Event {
 
     @Override
     public Long getId() {
@@ -29,6 +31,11 @@ public class SensorEventSub implements SensorEvent {
     @Override
     public String getName() {
         return "Stub sensor";
+    }
+
+    @Override
+    public Long getClusterId() {
+        return null;
     }
 
 
