@@ -2,9 +2,9 @@ package br.com.iot.producer.simulator.api.controller.events;
 
 import br.com.iot.producer.simulator.api.ApplicationStarter;
 import br.com.iot.producer.simulator.api.config.WebSecurityConfigStub;
-import br.com.iot.producer.simulator.api.controller.events.request.ClusterEventRequest;
-import br.com.iot.producer.simulator.api.controller.events.request.ImmutableClusterEventRequest;
-import br.com.iot.producer.simulator.api.service.ClusterService;
+import br.com.iot.producer.simulator.api.controller.events.request.EventRequest;
+import br.com.iot.producer.simulator.api.controller.events.request.ImmutableEventRequest;
+import br.com.iot.producer.simulator.api.service.EventService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +21,16 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
+/** Tests for {@link EventController} */
 @WebFluxTest
 @ActiveProfiles("test")
 @ContextConfiguration(classes = {ApplicationStarter.class, WebSecurityConfigStub.class})
-class ClusterControllerTest {
+class EventControllerTest {
 
     private WebTestClient webClient;
 
     @MockBean
-    private ClusterService clusterService;
+    private EventService eventService;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -38,18 +39,19 @@ class ClusterControllerTest {
     void setUp() {
         webClient = WebTestClient.bindToApplicationContext(applicationContext)
                 .configureClient()
-                .baseUrl("/clusters")
+                .baseUrl("/events")
                 .build();
-        when(clusterService.processAllClusters(anyList())).thenReturn(ParallelFlux.from(Flux.empty()));
+        when(eventService.processAllEvents(anyList())).thenReturn(ParallelFlux.from(Flux.empty()));
     }
 
     @Test
     void testProduceEventsOK() {
-        final ClusterEventRequest request = new ImmutableClusterEventRequest.Builder()
+        final EventRequest request = new ImmutableEventRequest.Builder()
                 .total(10)
                 .type("TEMPERATURE")
                 .name("Name")
                 .clusterId(123L)
+                .id(1234L)
                 .build();
 
         webClient.post()
@@ -58,22 +60,25 @@ class ClusterControllerTest {
                 .expectStatus()
                 .isAccepted();
 
-        verify(clusterService, only()).processAllClusters(anyList());
+        verify(eventService, only()).processAllEvents(anyList());
     }
 
     @Test
     void testProduceEventsMissingName() {
-        final ClusterEventRequest request = new ImmutableClusterEventRequest.Builder()
+        final EventRequest request = new ImmutableEventRequest.Builder()
                 .total(10)
+                .type("TEMPERATURE")
                 .clusterId(123L)
-                .type("TEMPERATURE").build();
+                .id(1234L)
+                .build();
+
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
                 .expectStatus()
                 .isBadRequest();
 
-        verify(clusterService, never()).processAllClusters(anyList());
+        verify(eventService, never()).processAllEvents(anyList());
     }
 
 
@@ -85,16 +90,16 @@ class ClusterControllerTest {
                 .expectStatus()
                 .isBadRequest();
 
-        verify(clusterService, never()).processAllClusters(anyList());
+        verify(eventService, never()).processAllEvents(anyList());
     }
 
     @Test
     void testProduceEventsInvalidHearthSmaller() {
-        final ClusterEventRequest request = new ImmutableClusterEventRequest.Builder()
-                .name("Name")
-                .clusterId(123L)
+        final EventRequest request = new ImmutableEventRequest.Builder()
                 .total(10)
                 .type("TEMPERATURE")
+                .clusterId(123L)
+                .id(1234L)
                 .heartBeat(-1)
                 .build();
         webClient.post()
@@ -103,34 +108,35 @@ class ClusterControllerTest {
                 .expectStatus()
                 .isBadRequest();
 
-        verify(clusterService, never()).processAllClusters(anyList());
+        verify(eventService, never()).processAllEvents(anyList());
     }
 
     @Test
     void testProduceEventsInvalidHeartBeatBigger() {
-        final ClusterEventRequest request = new ImmutableClusterEventRequest.Builder()
-                .name("Name")
-                .clusterId(123L)
+        final EventRequest request = new ImmutableEventRequest.Builder()
                 .total(10)
                 .type("TEMPERATURE")
+                .clusterId(123L)
+                .id(1234L)
                 .heartBeat(80)
                 .build();
+
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
                 .expectStatus()
                 .isBadRequest();
 
-        verify(clusterService, never()).processAllClusters(anyList());
+        verify(eventService, never()).processAllEvents(anyList());
     }
 
     @Test
     void testProduceEventsInvalidTotalNegative() {
-        final ClusterEventRequest request = new ImmutableClusterEventRequest.Builder()
-                .name("Name")
-                .clusterId(123L)
+        final EventRequest request = new ImmutableEventRequest.Builder()
                 .total(-10)
                 .type("TEMPERATURE")
+                .clusterId(123L)
+                .id(1234L)
                 .build();
         webClient.post()
                 .bodyValue(List.of(request))
@@ -138,23 +144,42 @@ class ClusterControllerTest {
                 .expectStatus()
                 .isBadRequest();
 
-        verify(clusterService, never()).processAllClusters(anyList());
+        verify(eventService, never()).processAllEvents(anyList());
     }
 
     @Test
-    void testProduceEventsInvalidClusterNegative() {
-        final ClusterEventRequest request = new ImmutableClusterEventRequest.Builder()
-                .name("Name")
+    void testProduceEventsMissingId() {
+        final EventRequest request = new ImmutableEventRequest.Builder()
                 .total(10)
                 .type("TEMPERATURE")
-                .clusterSize(-1)
+                .clusterId(123L)
                 .build();
+
         webClient.post()
                 .bodyValue(List.of(request))
                 .exchange()
                 .expectStatus()
                 .isBadRequest();
 
-        verify(clusterService, never()).processAllClusters(anyList());
+        verify(eventService, never()).processAllEvents(anyList());
+    }
+
+
+    @Test
+    void testProduceEventsIdNegative() {
+        final EventRequest request = new ImmutableEventRequest.Builder()
+                .total(10)
+                .id(-1L)
+                .type("TEMPERATURE")
+                .clusterId(123L)
+                .build();
+
+        webClient.post()
+                .bodyValue(List.of(request))
+                .exchange()
+                .expectStatus()
+                .isBadRequest();
+
+        verify(eventService, never()).processAllEvents(anyList());
     }
 }

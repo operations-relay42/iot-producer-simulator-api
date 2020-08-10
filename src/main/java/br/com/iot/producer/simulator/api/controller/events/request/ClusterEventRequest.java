@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.immutables.value.Value;
 import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 
 import static br.com.iot.producer.simulator.api.model.constant.EventsConstant.*;
 
@@ -41,7 +38,12 @@ public interface ClusterEventRequest {
         return DEFAULT_CLUSTER_SIZE;
     }
 
+    @NotNull(message = "{mandatory.cluster.request.clusterId}")
     @Nullable
     Long getClusterId();
+
+    @Nullable
+    @NotBlank(message = "{mandatory.request.name}")
+    String getName();
 
 }

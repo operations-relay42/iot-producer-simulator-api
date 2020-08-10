@@ -1,0 +1,224 @@
+openapi: 3.0.1
+info:
+  title: IoT Producer Simulator
+  description: 'Producer to simulate IoT sensor data'
+  contact:
+    email: flaviosolci@gmail.com
+  version: 1.0.0
+servers:
+  - url: http://localhost:8091/producer-api
+    description: Default (no Docker)
+  - url: http://localhost:8080/producer-api
+    description: Via docker
+tags:
+  - name: Events
+    description: Handle single events
+  - name: Cluster
+    description: Handle events in a cluster
+  - name: Maintenance
+    description: System maintenance
+paths:
+  /health:
+    get:
+      summary: Check applications health
+      tags:
+        - Maintenance
+      responses:
+        200:
+          description: Application is OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /events:
+    post:
+      security:
+        - bearerAuth:
+            - admin
+      tags:
+        - Events
+      summary: Produce the events based on the input definition.
+      description: With this endpoint you must inform all the sensor information (id, name, clusterId...). This is good to use when you want handle a small number of sensors.
+      requestBody:
+        description: Sensor and event definition
+        content:
+          application/json:
+            schema:
+              description: List with all the events to be processed
+              type: array
+              minLength: 1
+              items:
+                $ref: '#/components/schemas/EventRequest'
+        required: true
+      responses:
+        202:
+          description: Request was accepted and is being processed.
+        400:
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'
+  /clusters:
+    post:
+      security:
+        - bearerAuth:
+            - admin
+      tags:
+        - Cluster
+      summary: This will produce events in a massive way
+      description: |
+        With this you don't need care about the specific details of the event. It is made to send a bunch of events for the same cluster and type. It will generate the Name and ID for each entry in the cluster and then send.
+        If you want handle the specifics of an event, please check `POST` `/events`
+      requestBody:
+        description: Cluster information
+        content:
+          application/json:
+            schema:
+              description: List with all the clusters to be processed
+              type: array
+              minLength: 1
+              items:
+                $ref: '#/components/schemas/ClusterRequest'
+        required: true
+      responses:
+        202:
+          description: Request was accepted and is being processed.
+        400:
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: oauth2
+      description: JWT token
+      flows:
+        clientCredentials:
+          tokenUrl: 'https://dev-928245.okta.com/oauth2/ausp92bbxrQ9m9Ojq4x6/v1/token'
+          scopes:
+            admin: Access to produce events
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          description: Application status
+          type: string
+          example: UP
+    EventRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Sensor ID
+          example: 123456
+        name:
+          type: string
+          description: A friedly name for the sensor
+          example: humidity-sensor-02
+        type:
+          type: string
+          description: Sensor type. This is good to group sensor sensor that have the same kind of measurement.
+          example: HUMIDITY
+        total:
+          type: integer
+          format: int32
+          description: Total of events that should be sent
+          minimum: 1
+          example: 10
+        heartBeat:
+          type: integer
+          format: int32
+          description: |
+            The delay, in seconds, between each event.
+            I.e: The value 2 means, that every 2 second a new event is going to be published.
+          minimum: 1
+          maximum: 60
+          example: 2
+          default: 10
+        clusterId:
+          type: integer
+          format: int64
+          description: If this sensor is in a cluster, you can pass the cluster ID here. It wil make possible to search for all the sensor in the same cluster.
+          example: 123
+      required:
+        - id
+        - type
+        - total
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+          example: "ValidationException"
+        description:
+          type: string
+          description: Error description
+          example: "The field 'every' must be between 0 and 60."
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorField'
+    ErrorField:
+      type: object
+      properties:
+        field:
+          type: string
+          description: In case the error was caused by a specific field, it will be returned here the field name
+          example: "every"
+        description:
+          type: string
+          description: Especific error description for the field
+          example: "The field 'every' must be between 0 and 60."
+    ClusterRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Sensor type. This is good to group sensor sensor that have the same kind of measurement.
+          example: HUMIDITY
+        total:
+          type: integer
+          format: int32
+          description: Total of events that should be sent
+          minimum: 1
+          example: 10
+        heartBeat:
+          type: integer
+          format: int32
+          description: |
+            The delay, in seconds, between each event.
+            I.e: The value 2 means that every 2 second a new event is going to be published.
+          minimum: 1
+          maximum: 60
+          example: 2
+          default: 10
+        clusterId:
+          type: integer
+          format: int64
+          description: ID of this cluster.
+          example: 123
+        clusterSize:
+          type: integer
+          format: int32
+          description: |
+            Size of this cluster. Each element in the cluster will send the envet in parallel. In this case, if you set `clusterSize` = 10 and `heartBeat` = 5, it means that every 5 seconds 10 events will be published.
+          example: 10
+          minimum: 1
+          maximum: 1000
+          default: 1
+      required:
+        - id
+        - clusterId
+        - type
+        - total
+        - clusterSize

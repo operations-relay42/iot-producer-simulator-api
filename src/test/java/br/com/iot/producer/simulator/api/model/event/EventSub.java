@@ -3,8 +3,6 @@ package br.com.iot.producer.simulator.api.model.event;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Collections;
-import java.util.Map;
 
 public class EventSub implements Event {
 

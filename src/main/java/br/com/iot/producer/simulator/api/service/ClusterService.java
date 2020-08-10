@@ -39,7 +39,7 @@ public class ClusterService {
                 .doFirst(() -> LOG.debug("==== Going to process event cluster -> {}", request))
                 .parallel(request.getClusterSize())
                 .runOn(Schedulers.boundedElastic())
-                .map(processStep -> eventMapper.fromRequest(request))
+                .map(processStep -> eventMapper.fromRequest(request, processStep))
                 .flatMap(randomSensorEvent -> eventService.processEvent(randomSensorEvent, request.getTotal(), request.getHeartBeat()))
                 .doOnComplete(() -> LOG.debug("==== Ended event process for cluster -> {}", request));
     }
