@@ -2,7 +2,7 @@
 
 Project to simulate IoT sensor sending events to a Kafka cluster.
 
-![AWS CodeBuild Master](https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoidkU5dngzWnhJSkVZOE83RG5GOFdxVWJ4OStiOVFBYjAzSXRXVndEMHdpNjFFbnBXRWxRbjVFNVN5bnF1cUNoQkFRbTY1L3ZhLzJTSzZXc0hUMCtCS1NvPSIsIml2UGFyYW1ldGVyU3BlYyI6IkU5QUJNRDJ0VzNNRUNhOGwiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
+![AWS CodeBuild Master](https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiUFczU1RvNzdaQXE0c1htMFhSb1lKbmc0Z3R4cTVYejlCZmY3UW9QRi9xcmpzanZ3M1V2cnU4VCtOcHBxT2dtWGpYeDdpVnAwWE1NL0ZCbTJTY3JZbXFRPSIsIml2UGFyYW1ldGVyU3BlYyI6IlRNaUNjdThtM1BreE93RzciLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
 
 ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/flaviosolci/iot-services/producer-latest)
 
