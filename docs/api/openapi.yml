@@ -216,9 +216,15 @@ components:
           minimum: 1
           maximum: 1000
           default: 1
+        name:
+          type: string
+          description: |
+            This will be the prefix of all sensor names. We get this name and add a number at the end for each sensor.
+            Ex: `humidity_1`, `humidity_2`
       required:
         - id
         - clusterId
         - type
         - total
         - clusterSize
+        - name
