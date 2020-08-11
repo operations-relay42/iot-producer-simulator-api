@@ -181,7 +181,9 @@ Below are the options:
 
 The endpoints are documented using OpenApi and can be found at [docs/api/openapi.yml](docs/api/openapi.yml)
 
-More about OpenAPI: https://www.openapis.org/
+More about OpenAPI: https://www.openapis.org/.
+
+You can also checkout the [Postman Collection](https://documenter.getpostman.com/view/7376623/T1LLETBq?version=latest#ced80847-a808-4214-8b64-9e3198375944).
 
 ### Security
 
