@@ -84,7 +84,7 @@ Below are the options:
 
       :memo: It also comes with [Kafdrop](https://github.com/obsidiandynamics/kafdrop), which is *is a web UI for viewing Kafka topics and browsing consumer groups*. You can access via browser: [http://localhost:9000](http://localhost:9000/).
 
-2. **Hurt Me Plenty**: Cloning the repository + Kafka Docker
+2. **Hmm, that's ok...**: Cloning the repository + Kafka Docker
 
    1. Clone this repo to your local machine
 
