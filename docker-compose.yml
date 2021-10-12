@@ -1,7 +1,7 @@
 version: '3'
 services:
   zookeeper:
-    image: wurstmeister/zookeeper
+    image: wurstmeister/zookeeper:latest
     restart: unless-stopped
     ports:
       - "2181:2181"
@@ -58,7 +58,7 @@ services:
     networks:
       - kafka-network
   kafdrop:
-    image: obsidiandynamics/kafdrop
+    image: obsidiandynamics/kafdrop:latest
     ports:
       - "9000:9000"
     environment:

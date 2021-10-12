@@ -9,6 +9,7 @@ Project to simulate IoT sensor sending events to a Kafka cluster.
 - **[Immutables](https://immutables.github.io/)** - 2.8.8
 - **[Gradle](https://gradle.org/)** - 7.2
 - Java 11
+- Kafka
 
 ## Getting Started
 
@@ -52,7 +53,7 @@ Path: `./build/reports/jacoco/jacocoRootReport/html/index.html`
    2. Run the docker compose file
 
       ````bash
-      docker-compose -f "docker-compose.yml" up -d
+      docker-compose -f "docker-compose.yml" up --build -d
       ````
 
       ![Docker compose success status](docs/wiki/images/docker-compose-all-in-one.png)
@@ -191,3 +192,21 @@ curl --location --request POST 'http://localhost:8091/producer-api/clusters' \
 
 For more info about the endpoint, see [openapi.yml](docs/api/openapi.yml)
 
+### Kafka
+
+To distribute the sensor data we are using Kafka streams. When using the `docker-compose.yml`, it starts 3 kafka brokers:
+
+- kafka_0: 9092
+- kafka_1: 9094
+- kafka_2: 9095
+
+All the sensor events are forward to the Kafka topic `iot-data` and they have the following structure:
+
+| Field     | Type           | Description                          | Mandatory |
+|-----------|----------------|--------------------------------------|-----------|
+| id        | Long           | Sensor ID                            | Y         |
+| value     | BigDecimal     | Sensor measured value                | Y         |
+| timestamp | OffsetDateTime | Event timestamp                      | Y         |
+| type      | String         | Sensor type                          | Y         |
+| name      | String         | Sensor name                          | Y         |
+| clusterId | Long           | Cluster of which this sensor belongs | N         |
