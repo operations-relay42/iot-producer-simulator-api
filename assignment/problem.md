@@ -2,14 +2,18 @@
 
 ## Context
 
-Imagine there are IoT devices sending out continuous data which we want to collect (e.g. thermostat, heart rate car fuel readings, etc.). Our company wants to collect the data, store it somewhere and then be able to query it later.
+### IoT, the Data and Everything
 
-Our team already worked in a feature to get the IoT device data and send them to a _Kafka Stream_. Your task is to build an application(s) in which we can read the IoT data from the
+The Internet of Things (IoT), refers to the devices around the world that are connected to the internet, all collecting and sharing data. [Many companies](https://www.zdnet.com/article/ten-examples-of-iot-and-big-data-working-well-together/) are already using it to improve and better understand their business.
+
+Our company has access to several of these IoT devices that are constantly sending data (e.g. thermostat, heart rate car fuel readings, etc.). What we want is to collect the data, store it somewhere and then query it later.
+
+Our team already started work in a feature to get the IoT device data and send them to a _Kafka Stream_. Your task is to build an application(s) in which we can read the IoT data from the
 stream, store it and then, in a secure way query the readings of specific sensors or groups of sensors for a specific timeframe.
 
 ## Getting Started
 
-## Producer API
+### Producer API
 
 We are providing to you an application that will send "IoT events" to a Kafka stream. With this you can simulate any number of devices for your application.
 Check [here](../README.md) for more information.
