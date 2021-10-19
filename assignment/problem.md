@@ -21,18 +21,23 @@ Check [here](../README.md) for more information.
 ### Requirements
 
 - Written Java.
+- Use [iot-producer-simulator-api](https://github.com/operations-relay42/iot-producer-simulator-api/blob/master/assignment/problem.md#requirements) to produce events (don’t need write your own producer).
 - Read the events from the stream and store it.
 - Provide REST **secure** endpoint(s) to query the sensor data
-    - average/median/max/min
+    - Operations: average/median/max/min
+    - Filters:
+        - _(Mandatory)_ Time-frame (from/to)
+        - Event type
+        - Cluster ID.
 - Scalable and extendable to accept more IoT device types
-- _(Nice to have)_ a self-contained / container-based solution
+- A self-contained / container-based solution
 
 Your submission should contain the following:
 
 - Source code
     - preferably sourced at some version control (GitHub, Gitlab, BitBucket...)
-- Short description of the approach and limitations of the implementation
-- Instructions on how to run and how to access the service
+- Short description of your design and architecture, explaining your main decisions 
+- Limitation of the current implementation and how it could be improved.
 
 ### Evaluation criteria
 
