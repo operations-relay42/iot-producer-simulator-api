@@ -56,7 +56,7 @@ Path: `./build/reports/jacoco/jacocoRootReport/html/index.html`
       docker-compose -f "docker-compose.yml" up --build -d
       ````
 
-      ![Docker compose success status](docs/wiki/images/docker-compose-all-in-one.png)
+      ![Docker compose success status](docs/wiki/images/docker-compose-build.png)
 
       It will start:
 
@@ -194,9 +194,14 @@ For more info about the endpoint, see [openapi.yml](docs/api/openapi.yml)
 
 To distribute the sensor data we are using Kafka streams. When using the `docker-compose.yml`, it starts 3 kafka brokers:
 
-- kafka_0: 9092
-- kafka_1: 9094
-- kafka_2: 9095
+- `kafka_0`
+- `kafka_1`
+- `kafka_2`
+
+> In case connecting from outside docker network use `localhost` + the instance port: `9092`, `9094` and `9095` to connect
+
+
+> In case connecting within docker network use instance name + port: `kafka_0:29092`,`kafka_1:29093` and `kafka_2:29094`. More info: [Kafka Listeners - Explained](https://rmoff.net/2018/08/02/kafka-listeners-explained/) 
 
 All the sensor events are forward to the Kafka topic `iot-data` and they have the following structure:
 
