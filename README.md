@@ -65,7 +65,7 @@ Path: `./build/reports/jacoco/jacocoRootReport/html/index.html`
       - [Kafdrop](https://hub.docker.com/r/obsidiandynamics/kafdrop)
       - Producer API
 
-   3. The IOT Producer starts on `localhost:8091`
+   3. The IOT Producer starts on `localhost:8080` with docker and `localhost:8080` using the default profile.
 
       1. Checkout the [OpenApi](docs/api/openapi.yml) to know about the endpoint and how execute them.
       
@@ -90,7 +90,7 @@ The `Single sensor` endpoint provides the capability to set up a single sensor (
 For example, let's say we have the sensor `Living Room Temp` and we want to simulate the events for `TEMPERATURE` every `5 seconds`  for `10 minutes`. This is what the request would look like:
 
 ````curlrc
-curl --location --request POST 'http://localhost:8091/producer-api/events' \
+curl --location --request POST 'http://localhost:8080/producer-api/events' \
 --header 'Content-Type: application/json' \
 --data-raw '[
     {
@@ -115,7 +115,7 @@ curl --location --request POST 'http://localhost:8091/producer-api/events' \
 You can also send more than one sensor at the time:
 
 ````curlrc
-curl --location --request POST 'http://localhost:8091/producer-api/events' \
+curl --location --request POST 'http://localhost:8080/producer-api/events' \
 --header 'Content-Type: application/json' \
 --data-raw '[
     {
@@ -148,8 +148,7 @@ Taking the same example as before, lets say now we added 100 more sensors for te
 The request would look like:
 
 ````curlrc
-curl --location --request POST 'http://localhost:8091/producer-api/clusters' \
---header 'Authorization: Bearer eyJraWQiOiJUNzNuY3dy......' \
+curl --location --request POST 'http://localhost:8080/producer-api/clusters' \
 --header 'Content-Type: application/json' \
 --data-raw '[
     {
@@ -169,8 +168,7 @@ curl --location --request POST 'http://localhost:8091/producer-api/clusters' \
 Here we can also send more than one type:
 
 ````curlrc
-curl --location --request POST 'http://localhost:8091/producer-api/clusters' \
---header 'Authorization: Bearer eyJraWQiOiJUNzNuY3dy......' \
+curl --location --request POST 'http://localhost:8080/producer-api/clusters' \
 --header 'Content-Type: application/json' \
 --data-raw '[
     {
