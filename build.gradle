@@ -73,7 +73,7 @@ testlogger {
 
 wrapper {
     gradleVersion = '7.2'
-    distributionType = Wrapper.DistributionType.ALL
+    distributionType = Wrapper.DistributionType.BIN
 }
 
 jacocoTestReport {

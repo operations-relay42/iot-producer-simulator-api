@@ -8,11 +8,10 @@ COPY gradle.properties gradle.properties
 COPY settings.gradle settings.gradle
 COPY src src
 
-RUN ./gradlew build -x test
+RUN ./gradlew --no-daemon build -x test
 
-ARG JAR_FILE=build/libs/iot-producer-simulator-api.jar
-COPY ${JAR_FILE} application.jar
-RUN java -Djarmode=layertools -jar application.jar extract
+RUN ls /usr/app/build/libs
+RUN java -Djarmode=layertools -jar /usr/app/build/libs/iot-producer-simulator-api.jar extract
 
 FROM openjdk:11-jre-slim
 WORKDIR /usr/app
