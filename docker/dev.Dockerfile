@@ -10,7 +10,6 @@ COPY src src
 
 RUN ./gradlew --no-daemon build -x test
 
-RUN ls /usr/app/build/libs
 RUN java -Djarmode=layertools -jar /usr/app/build/libs/iot-producer-simulator-api.jar extract
 
 FROM openjdk:11-jre-slim
@@ -22,8 +21,11 @@ USER relay
 RUN mkdir -p /var/log
 
 COPY --from=builder /usr/app/dependencies/ ./
+RUN true # https://github.com/moby/moby/issues/37965
 COPY --from=builder /usr/app/spring-boot-loader/ ./
+RUN true
 COPY --from=builder /usr/app/snapshot-dependencies/ ./
+RUN true
 COPY --from=builder /usr/app/application/ ./
 
 ENTRYPOINT ["java","-noverify", "org.springframework.boot.loader.JarLauncher"]
