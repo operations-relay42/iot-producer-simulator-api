@@ -21,7 +21,7 @@ Check [here](../README.md) for more information.
 ### Requirements
 
 - Written Java.
-- Use [iot-producer-simulator-api](https://github.com/operations-relay42/iot-producer-simulator-api/blob/master/assignment/problem.md#requirements) to produce events (don’t need write your own producer).
+- Use [iot-producer-simulator-api](https://github.com/operations-relay42/iot-producer-simulator-api/blob/master/assignment/problem.md#requirements) to produce events (don’t need to write your own producer).
 - Read the events from the stream and store it.
 - Provide REST **secure** endpoint(s) to query the sensor data
     - Operations: average/median/max/min
@@ -50,6 +50,6 @@ Your submission should contain the following:
 - Technology choices.
     - Why that Database? What's the benefit of this framework?
 - Good documentation
-    - Can anyone team member that get this code easily executes and maintain?
+    - Can any team member that get this code easily executes and maintain?
 
 Don't panic and good luck!

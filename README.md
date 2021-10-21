@@ -56,7 +56,7 @@ Path: `./build/reports/jacoco/jacocoRootReport/html/index.html`
       docker-compose -f "docker-compose.yml" up --build -d
       ````
 
-      ![Docker compose success status](docs/wiki/images/docker-compose-all-in-one.png)
+      ![Docker compose success status](docs/wiki/images/docker-compose-build.png)
 
       It will start:
 
@@ -65,7 +65,7 @@ Path: `./build/reports/jacoco/jacocoRootReport/html/index.html`
       - [Kafdrop](https://hub.docker.com/r/obsidiandynamics/kafdrop)
       - Producer API
 
-   3. The IOT Producer starts on `localhost:8091`
+   3. The IOT Producer starts on `localhost:8080` with docker and `localhost:8080` using the default profile.
 
       1. Checkout the [OpenApi](docs/api/openapi.yml) to know about the endpoint and how execute them.
       
@@ -90,7 +90,7 @@ The `Single sensor` endpoint provides the capability to set up a single sensor (
 For example, let's say we have the sensor `Living Room Temp` and we want to simulate the events for `TEMPERATURE` every `5 seconds`  for `10 minutes`. This is what the request would look like:
 
 ````curlrc
-curl --location --request POST 'http://localhost:8091/producer-api/events' \
+curl --location --request POST 'http://localhost:8080/producer-api/events' \
 --header 'Content-Type: application/json' \
 --data-raw '[
     {
@@ -115,7 +115,7 @@ curl --location --request POST 'http://localhost:8091/producer-api/events' \
 You can also send more than one sensor at the time:
 
 ````curlrc
-curl --location --request POST 'http://localhost:8091/producer-api/events' \
+curl --location --request POST 'http://localhost:8080/producer-api/events' \
 --header 'Content-Type: application/json' \
 --data-raw '[
     {
@@ -148,8 +148,7 @@ Taking the same example as before, lets say now we added 100 more sensors for te
 The request would look like:
 
 ````curlrc
-curl --location --request POST 'http://localhost:8091/producer-api/clusters' \
---header 'Authorization: Bearer eyJraWQiOiJUNzNuY3dy......' \
+curl --location --request POST 'http://localhost:8080/producer-api/clusters' \
 --header 'Content-Type: application/json' \
 --data-raw '[
     {
@@ -169,8 +168,7 @@ curl --location --request POST 'http://localhost:8091/producer-api/clusters' \
 Here we can also send more than one type:
 
 ````curlrc
-curl --location --request POST 'http://localhost:8091/producer-api/clusters' \
---header 'Authorization: Bearer eyJraWQiOiJUNzNuY3dy......' \
+curl --location --request POST 'http://localhost:8080/producer-api/clusters' \
 --header 'Content-Type: application/json' \
 --data-raw '[
     {
@@ -196,9 +194,14 @@ For more info about the endpoint, see [openapi.yml](docs/api/openapi.yml)
 
 To distribute the sensor data we are using Kafka streams. When using the `docker-compose.yml`, it starts 3 kafka brokers:
 
-- kafka_0: 9092
-- kafka_1: 9094
-- kafka_2: 9095
+- `kafka_0`
+- `kafka_1`
+- `kafka_2`
+
+> In case connecting from outside docker network use `localhost` + the instance port: `9092`, `9094` and `9095` to connect
+
+
+> In case connecting within docker network use instance name + port: `kafka_0:29092`,`kafka_1:29093` and `kafka_2:29094`. More info: [Kafka Listeners - Explained](https://rmoff.net/2018/08/02/kafka-listeners-explained/) 
 
 All the sensor events are forward to the Kafka topic `iot-data` and they have the following structure:
 
