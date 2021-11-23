@@ -21,7 +21,7 @@ Check [here](../README.md) for more information.
 ### Requirements
 
 - Written Java.
-- Use [iot-producer-simulator-api](https://github.com/flaviosolci/iot-producer-simulator-api) to produce events (don’t need to write your own producer).
+- Use [iot-producer-simulator-api](https://github.com/operations-relay42/iot-producer-simulator-api) to produce events (don’t need to write your own producer).
 - Read the events from the stream and store it.
 - Provide REST **secure** endpoint(s) to query the sensor data
     - Operations: average/median/max/min
