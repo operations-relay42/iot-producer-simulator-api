@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 services:
   zookeeper:
     image: wurstmeister/zookeeper:latest
@@ -86,4 +86,6 @@ services:
 
 networks:
   kafka-network:
+    name: kafka-network
   app-network:
+    name: app-network
