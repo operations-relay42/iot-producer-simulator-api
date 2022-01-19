@@ -40,6 +40,8 @@ maven clean install
 
 ## Design and Architecture
 
+![iotconsumer](../iot.png "iotconsumer")
+
 * Kafka consumer consumes stream from producer and store it in database. In order to implemet that I've been using :
 
 - spring cloud stream because it provides a good abstraction so it makes it easy later to replcae kafka with another platform such as rabbitmq.
