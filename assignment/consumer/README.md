@@ -45,7 +45,7 @@ maven clean install
 - spring cloud stream because it provides a good abstraction so it makes it easy later to replcae kafka with another platform such as rabbitmq.
 - database and IO operations are blocking however, when it comes to streaming non-blocking is better choice so r2dbc mongo connector has been used which provided by spring mongo reactive library
 
-Mongo is high-performance document-oriented db as a result t makes it good choice for this kind of data that there is no relation with huge overload
+
 
 TODOs :
 
@@ -140,6 +140,19 @@ Request body should be
 ]
 ```
 
+### QA
+
+- How difficult would be to introduce new event types? And if they have a different structure?
+it is not difficult, feel free to add a new vent type. if the structure is different you need to provide a payloadreader implementation for specific type/structure . please visit JsonDecoderPayloadReader.java as an example
 
 
+- Is concurrency a problem? If we had a huge number of events, would it be a problem?
+It depends however, since reactive apps are resilient and scalable, I think we are fine. It is matter of optimization
 
+
+- Why that Database? What's the benefit of this framework?
+Mongodb is high-performance document-oriented db as a result t makes it a good choice for this kind of data that there is no relation with huge overload besides it can be clustered and it provides easier scalability.
+
+
+- Can any team member that get this code easily executes and maintain?
+There is always room for improvement and I welcome any suggestion. codes also should be self-explanatory
