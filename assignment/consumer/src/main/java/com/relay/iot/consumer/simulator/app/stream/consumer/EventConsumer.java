@@ -9,6 +9,7 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
 
 import com.relay.iot.consumer.simulator.app.model.event.EventModel;
+import com.relay.iot.consumer.simulator.app.service.EventService;
 import com.relay.iot.consumer.simulator.util.JsonUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EventConsumer {
 
-	
+	EventService eventService;
+
+	public EventConsumer(EventService eventService) {
+		this.eventService = eventService;
+	}
 
 	@StreamListener(EventDataInput.INPUT)
 	public void process(Message<?> message) {
@@ -40,6 +45,7 @@ public class EventConsumer {
 		}
 		EventModel event = JsonUtil.toObject(body, EventModel.class);
 		log.info("eventmodel {}", event.toString());
+		eventService.save(event, headers);
 	}
 
 	public String decode(String payload) {
