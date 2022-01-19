@@ -145,7 +145,7 @@ Request body should be
 ### QA
 
 - How difficult would be to introduce new event types? And if they have a different structure?
-it is not difficult, feel free to add a new vent type. if the structure is different you need to provide a payloadreader implementation for specific type/structure . please visit JsonDecoderPayloadReader.java as an example
+it is not difficult, feel free to add a new vent type. if the structure is different you need to provide a payloadreader implementation for specific type/structure . please visit [JsonDecoderPayloadReader.java](https://github.com/omidp/iot-producer-simulator-api/blob/master/assignment/consumer/src/main/java/com/relay/iot/consumer/simulator/app/stream/consumer/JsonDecoderPayloadReader.java) as an example
 
 
 - Is concurrency a problem? If we had a huge number of events, would it be a problem?
