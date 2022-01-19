@@ -45,6 +45,8 @@ maven clean install
 - spring cloud stream because it provides a good abstraction so it makes it easy later to replcae kafka with another platform such as rabbitmq.
 - database and IO operations are blocking however, when it comes to streaming non-blocking is better choice so r2dbc mongo connector has been used which provided by spring mongo reactive library
 
+Mongo is high-performance document-oriented db as a result t makes it good choice for this kind of data that there is no relation with huge overload
+
 TODOs :
 
 - For making an endpoint secure , http basic mechanism has been used which can be improved by jwt token and auth server implementation. please visit this repo of [mine](https://github.com/jedlab/cloud-platform).
@@ -52,6 +54,7 @@ TODOs :
 - handling backpresure : if kafka producers emit items faster than consumer can consume 
 - create docker volumes to keep data after docker restart
 - more integration/unit tests coverage
+- improve exception handling
 
 ### Running
 
