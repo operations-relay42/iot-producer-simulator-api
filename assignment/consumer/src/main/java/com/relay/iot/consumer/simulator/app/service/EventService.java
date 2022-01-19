@@ -1,7 +1,9 @@
 package com.relay.iot.consumer.simulator.app.service;
 
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -21,6 +23,7 @@ import com.relay.iot.consumer.simulator.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 /**
  * @author omidp
@@ -34,10 +37,13 @@ public class EventService {
 
 	ReactiveMongoTemplate mongoOperation;
 	
+	OperatorServiceFactory operatorService;
+	
 
-	public EventService(EventCrudRepository eventDao, ReactiveMongoTemplate mongoOperation) {
+	public EventService(EventCrudRepository eventDao, ReactiveMongoTemplate mongoOperation, OperatorServiceFactory operatorService) {
 		this.eventDao = eventDao;
 		this.mongoOperation = mongoOperation;
+		this.operatorService = operatorService;
 	}
 
 	@Transactional
@@ -56,6 +62,7 @@ public class EventService {
 
 	}
 
+	@Transactional
 	public Mono<SensorResult> querySensorData(SensorFilter filter) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("timestamp").gte(filter.getFromDateTime())
@@ -70,6 +77,7 @@ public class EventService {
 		Flux<EventEntity> events = mongoOperation.find(query, EventEntity.class);
 		//
 		
+		Mono<BigDecimal> calculate = operatorService.getInstance(filter.getOperation()).calculate(events);
 		
 		//
 		 
@@ -77,8 +85,32 @@ public class EventService {
 			SensorResult sensorResult = new SensorResult();
 			sensorResult.setResultList(m);
 			sensorResult.setResultCount(m.size());
-			return Mono.just(sensorResult);
-			
+			Mono<SensorResult> just = Mono.just(sensorResult);
+			Mono<Tuple2<SensorResult, BigDecimal>> zipWith = just.zipWith(calculate);
+			return zipWith.map(t -> {
+				List<EventResponse> resultList = t.getT1().getResultList();
+				SensorResult sr = new SensorResult();
+				//TODO: it might not be a good idea to put resultlist in the response, improve this response 
+//				sr.setResultList(resultList);
+				sr.setResultCount(resultList.size());
+				switch (filter.getOperation()) {
+				case AVERAGE:
+					sr.setAverage(t.getT2());
+					break;
+				case MIN:
+					sr.setMin(t.getT2());
+					break;
+				case MAX:
+					sr.setMax(t.getT2());
+					break;
+				case MEDIAN:
+					sr.setMedian(t.getT2());
+					break;
+				default:
+					break;
+				}
+				return sr;
+			});
 		});
 	}
 	
