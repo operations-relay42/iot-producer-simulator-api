@@ -58,12 +58,84 @@ TODOs :
 Make sure, producer is up and running 
 
 
-Run the docker compose file
+- Run the docker compose file
 
       ````bash
       docker-compose -f "docker-compose.yml" up --build -d
       ````
 
+- Run without docker
+
+```
+java -jar target/consumer-0.0.1-SNAPSHOT.jar
+```
+
+cUrl
+
+```
+curl -X GET \
+  'http://ip:port/consumer-api/sensors/{operation}?fromDate=2022-01-16&toDate=2022-01-20' \
+  -H 'Authorization: Basic dXNlcjp1c2Vy' \
+  -H 'Content-Type: application/json' \
+  -H 'cache-control: no-cache'
+```
+
+Average operation
+
+```
+curl -X GET \
+  'http://localhost:8092/consumer-api/sensors/average?fromDate=2022-01-16&toDate=2022-01-20&eventType=TEMPERATURE' \
+  -H 'Authorization: Basic dXNlcjp1c2Vy' \
+  -H 'Content-Type: application/json' \
+  -H 'cache-control: no-cache'
+```
+
+
+### Producer defect
+
+- POST data to /producer-api/clusters is missing a filed name inside json objects
+
+Response Error : 
+
+```
+{
+    "code": "ValidationError",
+    "description": "The parameter received is invalid.",
+    "fields": [
+        {
+            "field": "produceClusterEvents.request[1].name",
+            "description": "The field 'name' is mandatory."
+        },
+        {
+            "field": "produceClusterEvents.request[0].name",
+            "description": "The field 'name' is mandatory."
+        }
+    ]
+}
+```
+
+Request body should be 
+
+```
+[
+    {
+        "total": 200,
+        "type": "HUMIDITY",
+        "name": "HUMIDITY",
+        "heartBeat": 3,
+        "clusterSize": 10,
+        "clusterId": 1
+    },
+    {
+        "total": 120,
+        "type": "TEMPERATURE",
+        "name": "TEMPERATURE",
+        "heartBeat": 5,
+        "clusterSize": 100,
+        "clusterId": 1
+    }
+]
+```
 
 
 
