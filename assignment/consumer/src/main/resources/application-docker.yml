@@ -1,0 +1,45 @@
+server:
+  port: 8092
+
+spring:
+  application:
+    name:  consumer-api
+  webflux:
+    base-path: /consumer-api
+  data:
+    mongodb:
+      #auto-index-creation: false
+      port: 27017
+      host: ${MONGO_DB_HOSTNAME}  
+      database: iotdb
+  cloud:
+    stream:
+      bindings:
+        iot-data:
+          destination: iot-data
+          group: output-group-1
+          content-type: application/json
+
+      kafka:
+        binder:
+          brokers:
+          - kafka_0:29092
+          - kafka_1:29093
+          - kafka_2:29094
+
+#  kafka:
+#    consumer:
+#      key-deserializer: org.apache.kafka.common.serialization.LongDeserializer
+#      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        
+                    
+logging:
+  level:
+    root: INFO   
+  pattern:
+    console: '%highlight(<<%-5level>>) %d{dd-MM-yy HH:mm:ss.SSS} [%thread] %cyan(%c{0}.%M) - %msg%n'
+
+management:
+  endpoints:
+    web:
+      base-path: /

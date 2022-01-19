@@ -1,0 +1,26 @@
+version: '3.4'
+services:
+  db:
+    image: mongo:3.6    
+    ports:
+      - "27017:27017"  
+    networks:
+      - iotproducersimulatorapi_kafka-network
+  consumer-api:
+    build:
+        dockerfile: docker/dev.Dockerfile
+        context: .        
+    restart: unless-stopped
+    ports:
+      - "8092:8092"  
+    networks:
+      - iotproducersimulatorapi_kafka-network
+    environment:
+      SPRING_PROFILES_ACTIVE: docker    
+      MONGO_DB_HOSTNAME: db
+    depends_on:
+      - db
+    
+networks:
+  iotproducersimulatorapi_kafka-network:
+    external: true    
