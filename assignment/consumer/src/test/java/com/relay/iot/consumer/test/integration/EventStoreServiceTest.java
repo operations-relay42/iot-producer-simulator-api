@@ -1,12 +1,10 @@
 package com.relay.iot.consumer.test.integration;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +25,8 @@ import com.relay.iot.consumer.simulator.app.domain.EventEntity;
 import com.relay.iot.consumer.simulator.app.model.Operation;
 import com.relay.iot.consumer.simulator.app.model.SensorFilter;
 import com.relay.iot.consumer.simulator.app.model.SensorResult;
-import com.relay.iot.consumer.simulator.app.service.AverageOperator;
-import com.relay.iot.consumer.simulator.app.service.EventService;
-import com.relay.iot.consumer.simulator.app.service.MaxOperator;
-import com.relay.iot.consumer.simulator.app.service.MedianOperator;
-import com.relay.iot.consumer.simulator.app.service.MinOperator;
-import com.relay.iot.consumer.simulator.app.service.OperatorServiceFactory;
-import com.relay.iot.consumer.test.integration.EventServiceTest.TestContextConfig;
+import com.relay.iot.consumer.simulator.app.service.EventStoreService;
+import com.relay.iot.consumer.test.integration.EventStoreServiceTest.TestContextConfig;
 
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -48,81 +41,60 @@ import reactor.core.publisher.Mono;
 @ExtendWith(SpringExtension.class)
 @Slf4j
 @Import(TestContextConfig.class)
-@Disabled
-public class EventServiceTest {
-    
+public class EventStoreServiceTest {
+
 	private static final String CONNECTION_STRING = "mongodb://%s:%d";
-	
+
 	private MongodExecutable mongodExecutable;
-	
+
 	@Autowired
-	private EventService eventService;
-	
-	
+	private EventStoreService eventService;
+
 	@BeforeEach
-    void setup() throws Exception {
-        String ip = "localhost";
-        int port = 27017;
+	void setup() throws Exception {
+		String ip = "localhost";
+		int port = 27017;
 
-        ImmutableMongodConfig mongodConfig = MongodConfig
-            .builder()
-            .version(Version.Main.PRODUCTION)
-            .net(new Net(ip, port, Network.localhostIsIPv6()))
-            .build();
+		ImmutableMongodConfig mongodConfig = MongodConfig.builder().version(Version.Main.PRODUCTION)
+				.net(new Net(ip, port, Network.localhostIsIPv6())).build();
 
-        MongodStarter starter = MongodStarter.getDefaultInstance();
-        mongodExecutable = starter.prepare(mongodConfig);
-        mongodExecutable.start();
-    }
-	
-	
+		MongodStarter starter = MongodStarter.getDefaultInstance();
+		mongodExecutable = starter.prepare(mongodConfig);
+		mongodExecutable.start();
+	}
+
 	@Test
-	public void testEventService()
-	{
+	public void testEventService() {
 		Assert.notNull(eventService);
 		EventSub es = new EventSub();
 		eventService.save(es, new MessageHeaders(new HashMap<>()));
-		Date d = new Date(es.getTimestamp().toInstant().toEpochMilli());
-		Mono<SensorResult> querySensorData = eventService.querySensorData(new SensorFilter(Operation.MAX, d, d, es.getType(), es.getClusterId()));
-		Assert.isTrue(querySensorData.block().getMax().longValue() == es.getValue().longValue(), "max operation result mismatch");
-	}
-	
-	
 
-    @AfterEach
-    void clean() {
-        mongodExecutable.stop();
-    }
-	
+	}
+
+	@AfterEach
+	void clean() {
+		mongodExecutable.stop();
+	}
+
 	@TestConfiguration
 	@EnableReactiveMongoRepositories(basePackageClasses = EventCrudRepository.class)
 	@EntityScan(basePackageClasses = EventEntity.class)
-	public static class TestContextConfig
-	{
+	public static class TestContextConfig {
 		@Bean
 		public ReactiveMongoTemplate reactiveMongoTemplate(MongoClient mongoClient) {
 			return new ReactiveMongoTemplate(mongoClient, "iotdb");
 		}
-		
+
 		@Bean
-		MongoClient mongoClient()
-		{
+		MongoClient mongoClient() {
 			return MongoClients.create("mongodb://localhost:27017");
 		}
-		
+
 		@Bean
-		EventService es(EventCrudRepository eventDao, ReactiveMongoTemplate mongoOperation, OperatorServiceFactory operatorService)
-		{
-			return new EventService(eventDao, mongoOperation, operatorService);
+		EventStoreService es(EventCrudRepository eventDao) {
+			return new EventStoreService(eventDao);
 		}
-		
-		@Bean
-		OperatorServiceFactory osf()
-		{
-			return new OperatorServiceFactory(Arrays.asList(new AverageOperator(), new MedianOperator(), new MaxOperator(), new MinOperator()));
-		}
-		
-		
+
 	}
-	
+
 }

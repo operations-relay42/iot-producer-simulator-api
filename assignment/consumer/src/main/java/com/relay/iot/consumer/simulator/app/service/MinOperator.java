@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 import org.springframework.stereotype.Service;
 
-import com.relay.iot.consumer.simulator.app.domain.EventEntity;
 import com.relay.iot.consumer.simulator.app.model.Operation;
+import com.relay.iot.consumer.simulator.app.model.event.Event;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
@@ -22,9 +22,9 @@ public class MinOperator implements Operator {
 	}
 
 	@Override
-	public Mono<BigDecimal> calculate(Flux<EventEntity> events) {
+	public Mono<BigDecimal> calculate(Flux<Event> events) {
 		log.info("calculate min");
-		return MathFlux.min(events.map(EventEntity::getValue));
+		return MathFlux.min(events.map(Event::getValue));
 	}
 
 

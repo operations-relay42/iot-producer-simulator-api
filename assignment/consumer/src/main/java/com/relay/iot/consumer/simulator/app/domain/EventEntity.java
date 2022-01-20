@@ -2,14 +2,19 @@ package com.relay.iot.consumer.simulator.app.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.relay.iot.consumer.simulator.app.model.event.Event;
+
 @Document(collection = "events")
-public class EventEntity implements Serializable {
+public class EventEntity implements Serializable, Event {
 
 	@Id
 	private String uid;
@@ -18,7 +23,7 @@ public class EventEntity implements Serializable {
 
 	private BigDecimal value;
 
-	private Date timestamp;
+	private Date timestampDate;
 
 	@Indexed
 	private String type;
@@ -59,12 +64,12 @@ public class EventEntity implements Serializable {
 		this.value = value;
 	}
 
-	public Date getTimestamp() {
-		return timestamp;
+	public Date getTimestampDate() {
+		return timestampDate;
 	}
 
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
+	public void setTimestampDate(Date timestampDate) {
+		this.timestampDate = timestampDate;
 	}
 
 	public String getType() {
@@ -121,6 +126,15 @@ public class EventEntity implements Serializable {
 
 	public void setGroupId(String groupId) {
 		this.groupId = groupId;
+	}
+
+	@Transient
+	@Override
+	public OffsetDateTime getTimestamp() {
+		if(getTimestampDate() == null)
+			return null;
+		return getTimestampDate().toInstant()
+				  .atOffset(ZoneOffset.UTC);
 	}
 
 }

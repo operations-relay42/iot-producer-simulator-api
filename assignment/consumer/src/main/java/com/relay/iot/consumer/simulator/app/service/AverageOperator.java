@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.relay.iot.consumer.simulator.app.domain.EventEntity;
 import com.relay.iot.consumer.simulator.app.model.Operation;
+import com.relay.iot.consumer.simulator.app.model.event.Event;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,9 +21,9 @@ public class AverageOperator implements Operator {
 	}
 
 	@Override
-	public Mono<BigDecimal> calculate(Flux<EventEntity> events) {
+	public Mono<BigDecimal> calculate(Flux<Event> events) {
 		CustomMonoAverageBigDecimal<BigDecimal> monoAvgBigDecimal = new CustomMonoAverageBigDecimal<BigDecimal>(
-				events.map(EventEntity::getValue), i -> i);
+				events.map(Event::getValue), i -> i);
 		return monoAvgBigDecimal;
 	}
 

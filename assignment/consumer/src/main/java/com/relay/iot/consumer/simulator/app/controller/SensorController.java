@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.relay.iot.consumer.simulator.app.model.Operation;
 import com.relay.iot.consumer.simulator.app.model.SensorFilter;
 import com.relay.iot.consumer.simulator.app.model.SensorResult;
-import com.relay.iot.consumer.simulator.app.service.EventService;
+import com.relay.iot.consumer.simulator.app.service.EventQueryService;
 import com.relay.iot.consumer.simulator.util.DateUtil;
 
 import reactor.core.publisher.Mono;
@@ -24,9 +24,9 @@ import reactor.core.publisher.Mono;
 public class SensorController {
 
 	
-	private final EventService eventService;
+	private final EventQueryService eventService;
 
-    public SensorController(EventService eventService) {
+    public SensorController(EventQueryService eventService) {
         this.eventService = eventService;
     }
 
